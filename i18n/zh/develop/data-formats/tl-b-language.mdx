@@ -1,0 +1,280 @@
+# TL-B Language
+
+TL-B (Type Language - Binary) serves to describe the type system, constructors and existing functions. For example, we can use TL-B schemes to build binary structures associated with TON Blockchain. Special TL-B parsers can read schemes to deserialize binary data into different objects.
+
+## Overview
+
+We refer to any set of TL-B constructs as TL-B documents. A TL-B document usually consists of declarations of types (i.e. their constructors) and functional combinators. The declaration of each combinator ends with a semicolon (`;`).
+
+Here is an example of a possible combinator declaration:
+
+![TL-B example](/img/docs/data-formats/tl-b-docs-2.png?raw=true)
+
+## Context
+
+At the current stage of evolving TON, TL-B is more of a descriptive scheme of the structure, and it is not necessary to parse something into it or from it automatically.
+
+For developers planning to interact TON blockchain is useful to learn how to read and use the most frequent data structures to put correct data in your messages. It will useful for both tasks - developing your own very first smart contracts or interacting with any already deployed.
+
+Usually, tl-b is placed as documentation about data in a contract's directory or may describe in a comment right before the corresponding data is determined.
+
+From the perspective that TON should onboard mass adoption of dApps, TL-B serves for creating unified and very accurate documents about structures that should be used in these dApps. The developer can implement tl-b parser or use one of the created ones. Here, TL-B parser means the code that implements serialization based on the TL-B scheme, which will allow you to load consistently the right number and meaning of bits.
+
+For example, in https://github.com/xssnick/tonutils-go/tree/master/tlb you can assign attributes to fields of the structure, the size in bits, and most schemes will be parsed automatically. This is not a pure tlb, but rather mapping bits to fields. Creating such tools requires deep knowledge and understanding of TL-B schemes.
+
+## TL-B structure
+
+### Comments
+
+Comments are the same as in C++
+```tlb
+/*
+This is
+a comment
+*/
+
+// This is one line comment
+```
+
+### Constructors
+
+The left-hand side of each equation describes the way to define, or serialize, a value of the type indicated on the right-hand side. Such a description begins with the name of a constructor.
+
+![TL-B example](/img/docs/data-formats/tl-b-docs-3.png?raw=true)
+
+
+Constructors are used to specify the type of combinator, including the state at serialization. For example, constructors can also be used when you want to specify an `op`(operation code) in query to a smart contract in TON.
+
+```tlb
+// ....
+transfer#5fcc3d14 <...> = InternalMsgBody;
+// ....
+```
+* constructor name: `transfer`
+* constructor prefix code: `#5fcc3d14`
+
+Notice, every constructor name immediately followed by an optional constructor tag, such as `#_` or `$10`, which describes the bitstring used to encode (serialize) the constructor in question.
+
+```tlb
+// Explicit binary constructor tag
+addr_none$00 = MsgAddressExt;
+
+// Implicit binary constructor tag
+true$_ = True;
+
+// Implicit hexadecimal constructor tag
+config_mc_gas_prices#_ GasLimitsPrices = ConfigParam 20;
+```
+
+Examples:
+
+| constructor           | serialization details                     | result  |
+|-----------------------|-------------------------------------------|---------|
+| `some#3f5476ca`       | 32-bit uint serialize from hex value      | `0x3f5476ca` |
+| `some$0101`           | serialize `0101` raw bits                 | `0101` |
+| `some#_` or `some$_`  | serialize nothing                         | |
+| `some`                | serialize `crc32(equation)` \| `0x80000000` | `0xf6cedc4e` |
+
+
+
+
+Tags may be given in either binary (after a dollar sign `$`) or hexadecimal notation (after a hash sign `#`). If a tag is not explicitly provided, the TL-B parser must compute a default 32-bit constructor tag by hashing with with [CRC32](docs/develop/data-formats/crc32.md) algorithm the text of the “equation” with `| 0x80000000` defining this constructor in a certain fashion. Therefore, empty tags must be explicitly provided by `#_` or `$_`.
+
+All constructor names must be distinct and constructor tags for the same type must constitute a prefix code (otherwise the deserialization would not be unique); i.e. no tag can be a prefix of any other.
+
+This is an example from the [TonToken](https://github.com/akifoq/TonToken/blob/master/func/token/scheme.tlb) repository that shows  
+us how to implement an internal message TL-B scheme:
+
+```tlb
+transfer#4034a3c0 query_id:uint64
+    reciever:MsgAddrSmpl amount:Extra body:Any = Request;
+```
+
+In this example, `transfer#4034a3c0` will be serialized as a 32-bit unsigned integer from the hex value after the hash sign(`#`). This meets the standard requirements for an `op` in the [smart contract guidelines](/develop/smart-contracts/guidelines).
+
+Last option about calculation constructor's name, it is additional value for request and response version of some structures.
+For example, if you need create these for `some request` TL-B scheme, it will be defined by following:
+
+
+```python
+import binascii
+
+
+def main():
+    req_text = "some_request"
+    req = format(binascii.crc32(bytes(req_text, "utf-8")) & 0x7fffffff, 'x')
+    print(f"{req_text}#{req} = Request;")  # some_request#733d0d35 = Request;
+
+    rsp_text = "some_response"
+    rsp = format(binascii.crc32(bytes(rsp_text, "utf-8")) | 0x80000000, 'x')
+    print(f"{rsp_text}#{rsp} = Response;")  # some_response#88b0eb8f = Response;
+
+
+if __name__ == "__main__":
+    main()
+```
+
+
+### Field definition
+
+#### Explicit
+
+The constructor and its optional tag are followed by field definitions. Each field definition is of the form `ident:type-expr`, where ident is an identifier with the name of the field16 (replaced by an underscore for anonymous fields), and type-expr is the field’s type. The type provided here is a type expression, which may include simple types or parametrized types with suitable parameters.
+
+Variables — i.e. the (identifiers of the) previously defined fields of types `#` (natural numbers) or `Type` (type of types) — may be used as parameters for the parametrized types. The serialization process recursively serializes each field according to its type and the serialization of a value ultimately consists of the concatenation of bitstrings representing the constructor (i.e. the constructor tag) and the field values.
+
+```tlb
+bool_false$0 = Bool;
+bool_true$1 = Bool;
+tick_tock$_ tick:Bool tock:Bool = TickTock;
+```
+
+Here Type `TickTock` defined with `tick_tock$_` contructor and `tick:Bool`, `tock:Bool` explicit fields definitions. `Bool` type defined with two another equation(functional combinator name). In summary this scheme tell us, that `TickTock` is a binary struct consists of two bits, each of them could be equal `1` or `0`, for example: `01`.
+
+
+
+|scheme | meaning |
+|---|---|
+| # |  an unsigned 32-bit number|
+| ## N| The same as uintN - means an unsigned N-bit number|
+|#<= N| A number between 0 and N (including both). Such a number is stored in ceil(log2(N+1)) bits. |
+| N * Bit |  means N-bit slice |
+|Type | stands for arbitrary type (but only presents in implicit definitions). |
+| ^Cell | An arbitrary cell in reference |
+| ^[_field_def_] | means that _field_definitions_ are stored in the referenced cell |
+
+#### Implicit
+Some fields may be implicit. Their definitions are surrounded by curly
+brackets(`{`, `}`), which indicate that the field is not actually present in the current scheme, but that its value must be deduced from other data (usually the parameters of the type being serialized). Example:
+
+```tlb
+nothing$0 {X:Type} = Maybe X;
+just$1 {X:Type} value:X = Maybe X;
+```
+
+Maybe struct defined for any Type, and when it will use in another TL-B scheme, X - should be defined type:
+
+```tlb
+cp:(Maybe int16) = VmControlData;
+// VmControlData = 0
+// VmControlData = 1 0000 0000 0000 0001
+```
+
+#### Parametrized types `##` and `#`
+
+Parametrized type `#<= p` with `p : #` (this notation means `“p of type #”`, i.e. a natural number) denotes the subtype of the natural numbers type `#`, consisting of integers `0 ... p;` it is serialized into `[log2(p + 1)]` bits as an unsigned big-endian integer.
+
+Type `#` by itself is serialized as an unsigned 32-bit integer. Parametrized type `## b` with `b : #<=31` is equivalent to `#<= 2^b − 1`  (i.e. it is an unsigned b-bit integer). For example:
+
+
+```tlb
+action_send_msg#0ec3c86d mode:(## 8)
+  out_msg:^(MessageRelaxed Any) = OutAction;
+```
+
+In this scheme `mode:(## 8)` will be serialized as an 8-bit unsigned integer.
+
+
+Here `int16` defined Type for `Maybe` and `VmControlData` serialized as `0` or `1` and `int16` number in binary form.
+
+### References
+
+A caret (`ˆ`) preceding a type `X` means that instead of serializing a value of type `X` as a bitstring inside the current cell, we place this value into a separate cell and add a reference to it into the current cell. Therefore `ˆX` means “the type of references to cells containing values of type `X`”.
+
+```tlb
+account_descr$_ account:^Account last_trans_hash:bits256
+  last_trans_lt:uint64 = ShardAccount;
+```
+
+According to this scheme `Account` will be placed in a separate cell and then placed as reference in the `ShardAccount` cell.
+
+
+### Recurrent schemes
+Some occurrences of “variables” (i.e. already-defined fields) are prefixed by a tilde(`~`). This indicates that the variable’s occurrence is used in the opposite way to the default behavior: on the left-hand side of the equation, it means that the variable will be deduced (computed) based on this occurrence, instead of substituting its previously computed value; in the right-hand side, conversely, it means that the variable will not be deduced from the type being serialized, but rather that it will be computed during the deserialization process. In other words, a tilde transforms an “input argument” into an “output argument” or vice versa.
+
+For example, we can use this to write a TL-B scheme for a simple transaction in TON with comment (which must be serialized as a sequence of cells):
+
+```tlb
+empty#_ b:bits = Snake ~0;
+cons#_ {n:#} b:bits next:^(Snake ~n) = Snake ~(n + 1);
+
+op:#0 comment:Snake = Request;
+```
+
+
+
+## Conditional (optional) fields
+
+The serialization of conditional fields is determined by the other already specified fields.
+
+For example (from [`block.tlb`](https://github.com/newton-blockchain/ton/blob/ae5c0720143e231c32c3d2034cfe4e533a16d969/crypto/block/block.tlb#L418)):
+
+```tlb
+block_info#9bc7a987 version:uint32 
+  not_master:(## 1) 
+  after_merge:(## 1) before_split:(## 1) 
+  after_split:(## 1) 
+  want_split:Bool want_merge:Bool
+  key_block:Bool vert_seqno_incr:(## 1)
+  flags:(## 8) { flags <= 1 }
+  seq_no:# vert_seq_no:# { vert_seq_no >= vert_seqno_incr } 
+  { prev_seq_no:# } { ~prev_seq_no + 1 = seq_no } 
+  shard:ShardIdent gen_utime:uint32
+  start_lt:uint64 end_lt:uint64
+  gen_validator_list_hash_short:uint32
+  gen_catchain_seqno:uint32
+  min_ref_mc_seqno:uint32
+  prev_key_block_seqno:uint32
+  gen_software:flags . 0?GlobalVersion
+  master_ref:not_master?^BlkMasterInfo 
+  prev_ref:^(BlkPrevInfo after_merge)
+  prev_vert_ref:vert_seqno_incr?^(BlkPrevInfo 0)
+  = BlockInfo;
+```
+
+In this example, the cell reference `^BlkMasterInfo` will be serialized only if `not_master` > 0. And the `GlobalVersion` will be serialized only if the bit at index 0 in a binary representation of `flags` is set.
+
+
+## Library usage
+
+
+:::info Namespaces
+Namespaces are available in the TL version from Telegram, but as it turned out, it was not used in TL-B
+:::
+
+You can use TL-B libraries to extend your documents and to avoid writing repetitive schemes. We have prepared a set of ready-made libraries that you can use. They are mostly based on block.tlb but we have also added some combinators of our own.
+
+- `tonstdlib.tlb`
+- `tonextlib.tlb`
+- `hashmap.tlb`
+
+In TL-B libraries there is no concept of cyclic import. Just indicate the dependency on some other document (library) at the top of the document with the keyword `dependson`. For example:
+
+file `mydoc.tlb`:
+```tlb
+//
+// dependson "libraries/tonstdlib.tlb"
+//
+
+op:uint32 data:Any = MsgBody;
+something$0101 data:(Maybe ^MsgBody) = SomethingImportant;
+```
+
+In dependencies, you are required to specify the correct relative path. The example above is located in such a tree:
+
+```
+.
+├── mydoc.tlb
+├── libraries
+│   ├── ...
+│   └── tonstdlib.tlb
+└── ...
+```
+
+## Useful sources
+
+- [Telegram Open Network Virtual Machine](https://ton.org/tvm.pdf)
+- [Actual version of TL-B scheme - block.tlb](https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb)
+- [A description of an older version of TL](https://core.telegram.org/mtproto/TL)
+
+_Thanks to the [Vudi](https://github.com/Vudi) and [cryshado](https://github.com/cryshado) for creating original tl-b overview articles for the TON community!_
