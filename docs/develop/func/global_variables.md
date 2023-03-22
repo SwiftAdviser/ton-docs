@@ -1,7 +1,8 @@
-# Global variables
-The FunC program is essentially a list of function declarations/definitions and global variable declarations. This section covers the second topic.
+# 全局變量
+FunC 程序本質上是函數聲明/定義和全局變量聲明的列表。本節將涵蓋第二個主題。
 
-A global variable can be declared with the `global` keyword followed by the variable type and the variable name. For example,
+可以使用 `global` 關鍵字和變量類型以及變量名聲明全局變量。例如，
+
 ```func
 global ((int, int) -> int) op;
 

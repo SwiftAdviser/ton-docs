@@ -1,18 +1,21 @@
 # POW Givers
 
-:::warning deprecated
-This information may be out of date and no longer useful. Feel free to omit it.
+:::warning 廢棄
+此信息可能已過時，不再有用。可以忽略它。
 :::
 
-The aim of this text is to describe how to interact with Proof-of-Work Giver smart contracts to obtain Toncoin. We assume familiarity with the TON Blockchain Lite Client as explained in `Getting Started`, and with the procedure required to compile the Lite Client and other software. For obtaining the larger amount of Toncoin required for running a validator, we also assume acquaintance with the `Full Node` and `Validator` pages. You will also need a dedicated server powerful enough for running a Full Node in order to obtain the larger amount of Toncoin. Obtaining small amounts of Toncoin does not require a dedicated server and may be done in several minutes on a home computer.
 
-> Note that, at the moment, large resources are required for any mining due to the large number of miners.
+本文的目的是描述如何與工作量證明(PoW)的Giver智能合約互動以獲得TON Coin。我們假設您已熟悉TON區塊鏈輕客戶端（Lite Client），如在`入門`中所解釋的，以及編譯輕客戶端和其他軟件所需的程序。為了獲得運行驗證器所需的更多TON Coin，我們還假設您熟悉`完整節點（Full Node）`和`驗證器（Validator）`頁面。獲得更多TON Coin還需要一台足夠強大的專用服務器來運行完整節點。獲得少量TON Coin不需要專用服務器，可以在幾分鐘內在家用電腦上完成。
 
-## 1. Proof-of-Work Giver smart contracts
 
-In order to prevent a small number of malicious parties from collecting all Toncoin, a special kind of "Proof-of-Work Giver" smart contract has been deployed in the masterchain of the network. The addresses of these smart contacts are:
+> 請注意，由於礦工數量眾多，目前任何挖礦都需要大量資源。
 
-Small givers (deliver from 10 to 100 Toncoin every several minutes):
+
+## 1. 工作量證明(PoW) Giver 智能合約
+
+為了防止少數惡意方收集所有的TON Coin，一種特殊類型的"工作量證明(PoW) Giver"智能合約已被部署在網絡的主鏈上。這些智能合約的地址如下：
+
+小型Giver（每隔幾分鐘發送10到100個TON Coin）：
 
 * kf-kkdY_B7p-77TLn2hUhM6QidWrrsl8FYWCIvBMpZKprBtN
 * kf8SYc83pm5JkGt0p3TQRkuiM58O9Cr3waUtR9OoFq716lN-
@@ -25,7 +28,7 @@ Small givers (deliver from 10 to 100 Toncoin every several minutes):
 * kf9iWhwk9GwAXjtwKG-vN7rmXT3hLIT23RBY6KhVaynRrIK7
 * kf8JfFUEJhhpRW80_jqD7zzQteH6EBHOzxiOhygRhBdt4z2N
 
-Large givers (deliver 10,000 Toncoin at least once a day):
+大型Giver（每天至少發送10,000個TON Coin）：
 
 * kf8guqdIbY6kpMykR8WFeVGbZcP2iuBagXfnQuq0rGrxgE04
 * kf9CxReRyaGj0vpSH0gRZkOAitm_yDHvgiMGtmvG-ZTirrMC
@@ -38,25 +41,27 @@ Large givers (deliver 10,000 Toncoin at least once a day):
 * kf-uNWj4JmTJefr7IfjBSYQhFbd3JqtQ6cxuNIsJqDQ8SiEA
 * kf8mO4l6ZB_eaMn1OqjLRrrkiBcSt7kYTvJC_dzJLdpEDKxn
 
-> Note that at the current moment all large givers are depleted.
+> 請注意，目前所有大型Giver都已耗盡。
 
-The first ten smart contracts enable a user willing to obtain a small amount of Toncoin to obtain some without spending too much computing power (typically, several minutes of work on a home computer should suffice). The remaining smart contracts are for obtaining larger amounts of Toncoin required for running a validator in the network; typically, a day of work on a dedicated server powerful enough to run a validator should suffice to obtain the necessary amount.
+前十個智能合約允許希望獲得少量TON Coin的用戶在不花費太多計算能力的情況下獲得一些（通常，家用電腦上幾分鐘的工作就足夠了）。其餘的智能合約用於獲得運行網絡驗證器所需的更多TON Coin；通常，在足夠運行驗證器的專用服務器上工作一天就足以獲得所需數量。
 
-> Note that at the moment, due to a large number of miners, large resources are required for mining small givers.
 
-You should randomly choose one of these "proof-of-work giver" smart contracts (from one of these two lists depending on your purpose) and obtain Toncoin from this smart contract by a procedure similar to mining. Essentially, you have to present an external message containing the proof of work and the address of your wallet to the chosen "proof-of-work giver" smart contract, and then the necessary amount will be sent to you.
+> 請注意，目前由於礦工數量眾多，挖掘小型Giver需要大量資源。
 
-## 2. The mining process
+您應該隨機選擇其中一個"工作量證明Giver"智能合約（根據您的目的從這兩個列表中選擇一個），並通過類似於挖礦的過程從這個智能合約獲得TON Coin。本質上，您需要向所選的"工作量證明Giver"智能合約提交一個包含工作量證明和您錢包地址的外部消息，然後將向您發送所需金額。
 
-In order to create an external message containing the "proof-of-work", you should run a special mining utility, compiled from the TON sources located in the GitHub repository. The utility is located in file `./crypto/pow-miner` with respect to the build directory and can be compiled by typing `make pow-miner` in the build directory.
+## 2. 挖礦過程
 
-However, before running `pow-miner`, you need to know the actual values of `seed` and `complexity` parameters of the chosen "proof-of-work giver" smart contract. This can be done by invoking the get-method `get_pow_params` of this smart contract. For instance, if you the use giver smart contract, `kf-kkdY_B7p-77TLn2hUhM6QidWrrsl8FYWCIvBMpZKprBtN` you can simply type:
+為了創建一個包含"工作量證明"的外部消息，您應該運行一個特殊的挖礦實用程序，該實用程序是從位於GitHub存儲庫的TON源代碼編譯而來。該實用程序位於編譯目錄下的`./crypto/pow-miner`文件中，可以通過在編譯目錄中輸入`make pow-miner`來編譯。
+
+然而，在運行 `pow-miner` 之前，您需要知道所選“工作量證明贈予者”智能合約的 `seed` 和 `complexity` 參數的實際值。這可以通過調用該智能合約的 get 方法 `get_pow_params` 來完成。例如，如果您使用贈予者智能合約 `kf-kkdY_B7p-77TLn2hUhM6QidWrrsl8FYWCIvBMpZKprBtN`，您可以簡單地輸入：
+
 
 ```
 > runmethod kf-kkdY_B7p-77TLn2hUhM6QidWrrsl8FYWCIvBMpZKprBtN get_pow_params
 ```
 
-in the Lite Client console and obtain an output like:
+在 Lite Client 控制台中輸入並獲取類似以下的輸出：
 
 ``` ...
     arguments:  [ 101616 ] 
@@ -64,40 +69,40 @@ in the Lite Client console and obtain an output like:
     remote result (not to be trusted):  [ 229760179690128740373110445116482216837 53919893334301279589334030174039261347274288845081144962207220498432 100000000000 256 ]
 ```
 
-The two first large numbers in the "result:" line are the `seed` and the `complexity` of this smart contract. In this example, the seed is `229760179690128740373110445116482216837`, and the complexity is `53919893334301279589334030174039261347274288845081144962207220498432`.
+「result:」行中的前兩個大數字是此智能合約的「seed」和「complexity」。在此示例中，seed 是 `229760179690128740373110445116482216837`，而 complexity 則為 `53919893334301279589334030174039261347274288845081144962207220498432`。
 
-Next, you invoke the `pow-miner` utility as follows:
+接下來，您將使用以下方式調用 `pow-miner` 工具：
 
 ```
 $ crypto/pow-miner -vv -w<num-threads> -t<timeout-in-sec> <your-wallet-address> <seed> <complexity> <iterations> <pow-giver-address> <boc-filename>
 ```
 
-Here:
-* `<num-threads>` is the number of CPU cores that you want to use for mining.
-* `<timeout-in-sec>` is the maximal amount of seconds that the miner would run before admitting failure.
-* `<your-wallet-address>` is the address of your wallet (possibly not initialized yet).It is either on the masterchain or on the workchain (note that you need a masterchain wallet to control a validator).
-* `<seed>` and `<complexity>` are the most recent values obtained by running get-method `get-pow-params`.
-* `<pow-giver-address>` is the address of the chosen proof-of-work giver smart contract.
-* `<boc-filename>` is the filename of the output file where the external message with the proof of work will be saved in the case of success.
+在此：
+* `<num-threads>` 是您希望用於挖礦的CPU核心數。
+* `<timeout-in-sec>` 是礦工在承認失敗之前最多運行的秒數。
+* `<your-wallet-address>` 是您的錢包地址（可能尚未初始化）。它可以在主鏈或工作鏈上（注意，您需要一個主鏈錢包才能控制驗證器）。
+* `<seed>` 和 `<complexity>` 是通過運行get-method `get-pow-params`獲得的最新值。
+* `<pow-giver-address>` 是所選工作量證明Giver智能合約的地址。
+* `<boc-filename>` 是成功時將保存工作量證明的外部消息的輸出文件的文件名。
 
-For example, if your wallet address is `kQBWkNKqzCAwA9vjMwRmg7aY75Rf8lByPA9zKXoqGkHi8SM7`, you might run:
+例如，如果您的錢包地址是 `kQBWkNKqzCAwA9vjMwRmg7aY75Rf8lByPA9zKXoqGkHi8SM7`，您可以運行：
 
 ```
 $ crypto/pow-miner -vv -w7 -t100 kQBWkNKqzCAwA9vjMwRmg7aY75Rf8lByPA9zKXoqGkHi8SM7 229760179690128740373110445116482216837 53919893334301279589334030174039261347274288845081144962207220498432 100000000000 kf-kkdY_B7p-77TLn2hUhM6QidWrrsl8FYWCIvBMpZKprBtN mined.boc
 ```
 
-The program will run for some time (at most 100 seconds in this case) and either terminate successfully (with a zero exit code) and save the required proof of work into file `mined.boc` or terminate with a non-zero exit code if no proof of work was found.
+程序將運行一段時間（在此例中最多100秒），然後成功終止（退出代碼為零）並將所需的工作量證明保存到文件`mined.boc`中，或者如果未找到工作量證明，則以非零退出代碼終止。
 
-In the case of failure, you will see something like:
+如果失敗，您將看到類似以下內容：
 
 ```
    [ expected required hashes for success: 2147483648 ]
    [ hashes computed: 1192230912 ]
 ```
 
-and the program will terminate with a non-zero exit code. Then you have to obtain the `seed` and `complexity` again (because they may have changed in the meantime as a result of processing requests from more successful miners) and re-run the `pow-miner` with the new parameters, repeating the process again and again until success.
+程序將以非零退出代碼終止。然後，您必須再次獲得`seed`和`complexity`（因為在此期間，由於處理了更成功的礦工的請求，它們可能已經發生了變化），並使用新參數重新運行`pow-miner`，反覆執行過程，直至成功。
 
-In the case of success, you will see something like:
+成功時，您將看到類似以下內容：
 
 ```
    [ expected required hashes for success: 2147483648 ]
@@ -106,17 +111,20 @@ In the case of success, you will see something like:
    [ hashes computed: 1122036095 ]
 ```
 
-Then you can use the Lite Client to send an external message from file `mined.boc` to the proof-of-work giver smart contract (and you must do this as soon as possible):
+接下來，您可以使用Lite Client從文件'mined.boc'向工作量證明贈與者智能合約發送外部消息（您必須盡快進行此操作）：
+
 
 ```
 > sendfile mined.boc
 ... external message status is 1
 ```
 
-You can wait for several seconds and check the state of your wallet:
+makefile
+Copy code
+你可以等待幾秒鐘，並檢查您錢包的狀態：
 
 :::info
-Please note here and further that the code, comments, and/or documentation may contain parameters, methods, and definitions such as “gram”, “nanogram”, etc. That is a legacy of the original TON code, developed by the Telegram. Gram cryptocurrency was never issued. The currency of TON is Toncoin and the currency of the TON testnet is Test Toncoin.
+請注意，此處及以後的代碼、注釋和/或文檔可能包含“克”、“納克”等參數、方法和定義。這是Telegram開發的原始TON代碼的遺產。Gram加密貨幣從未發行。TON的貨幣是Toncoin，TON測試網的貨幣是Test Toncoin。
 :::
 ```
 > last
@@ -143,9 +151,10 @@ last transaction lt = 7720869000001 hash = 83C15CDED025970FEF7521206E82D2396B462
 account balance is 100000000000ng
 ```
 
-If nobody has sent a valid proof of work with this `seed` and `complexity` before you, the proof-of-work giver will accept your proof of work, and this will be reflected in the balance of your wallet (10 or 20 seconds may elapse after sending the external message before this happens; be sure to make several attempts and type `last` each time before checking the balance of your wallet to refresh the Lite Client state). In the case of success, you will see that the balance has been increased (and even that your wallet has been created in an uninitialized state if it did not exist before). In the case of failure, you will have to obtain the new `seed` and `complexity` and repeat the mining process from the very beginning.
+如果在您之前沒有人使用此種子(seed)和複雜度(complexity)發送了有效的工作證明，Proof-of-Work Giver將接受您的工作證明，並將其反映在您的錢包餘額上（在發送外部消息後可能會經過10或20秒，才會發生這種情況；請確保進行多次嘗試，每次在檢查錢包餘額之前輸入`last`以刷新Lite Client狀態）。如果成功，您將看到餘額已增加（甚至如果以前不存在，還會創建未初始化狀態的錢包）。如果失敗，您必須獲取新的`seed`和`complexity`，並從頭開始重複挖礦過程。
 
-If you have been lucky and the balance of your wallet has increased, you may want to initialize the wallet if it wasn't initialized before (more information on wallet creation can be found in `Step-by-Step`):
+如果您運氣好，錢包餘額已增加，您可能希望在未初始化之前將錢包初始化（有關創建錢包的更多信息，請參見`逐步`）：
+
 
 ```
 > sendfile new-wallet-query.boc
@@ -190,8 +199,11 @@ last transaction lt = 7720945000001 hash = 73353151859661AB0202EA5D92FF409747F20
 account balance is 99995640998ng
 ```
 
-Now you are a happy owner of 100 Toncoin. Congratulations!
+The previous model used in this conversation is unavailable. We've switched you to the latest default model
+markdown
+Copy code
+現在您是100 Toncoin的榮幸擁有者。恭喜！
 
-## 3. Automating the mining process in the case of failure
+## 3. 在失敗的情況下自動化挖礦過程
 
-If you fail to obtain your Toncoin for a long time, this may happen because too many other users are simultaneously mining from the same proof-of-work giver smart contract. Maybe you should choose another proof-of-work giver smart contract from one of the lists given above. Alternatively, you can write a simple script to automatically run `pow-miner` with the correct parameters again and again until success (detected by checking the exit code of `pow-miner`) and invoke the Lite Client with the parameter `-c 'sendfile mined.boc'` to send the external message immediately after it is found.
+如果您長時間無法獲得Toncoin，可能是因為太多其他用戶同時從同一個Proof-of-Work Giver智能合約進行挖掘。也許您應該從上面提供的一個列表中選擇另一個Proof-of-Work Giver智能合約。或者，您可以編寫一個簡單的腳本，自動使用正確的參數一遍又一遍地運行`pow-miner`，直到成功（通過檢查`pow-miner`的退出代碼來檢測）並使用參數`-c 'sendfile mined.boc'`調用Lite Client，在找到外部消息後立即發送。

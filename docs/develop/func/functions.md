@@ -1,53 +1,57 @@
-# Functions
-FunC program is essentially a list of function declarations/definitions and global variable declarations. This section covers the first topic.
+# 函數
 
-Any function declaration or definition starts with a common pattern and one of the three things goes next:
-- single `;`, which means that the function is declared but not defined yet. It may be defined later in the same file or in some other file which is passed before the current one to the FunC compiler. For example,
+FunC程式本質上是一個函數聲明/定義和全域變數聲明的列表。本節將涵蓋第一個主題。
+
+任何函數聲明或定義都以一個共同的模式開始，接著有三種情況之一：
+
+* 單獨的`;`，這意味著函數被聲明但尚未定義。它可以在同一文件中或在當前文件之前傳遞的其他文件中定義。例如，
   ```func
   int add(int x, int y);
   ```
-  is a simple declaration of a function named `add` of type `(int, int) -> int`.
-- assembler function body definition. It is the way to define functions by low-level TVM primitives for later use in FunC program. For example,
+  是一個名為 `add` 、型別為 `(int, int) -> int` 的函數簡單聲明。
+- 組合語言函數體定義。這是使用低級TVM原語定義函數以供稍後在FunC程序中使用的方法。例如，
   ```func
   int add(int x, int y) asm "ADD";
   ```
-  is an assembler definition of the same function `add` of type `(int, int) -> int` which will translate to the TVM opcode `ADD`.
+  是同一函數 `add` 的組合語言定義，型別為 `(int, int) -> int` ，它將被編譯為TVM操作碼 `ADD` 。
 
-- ordinary block statement function body definition. It is the usual way to define functions. For example,
+- 普通區塊語句函數體定義。這是定義函數的常規方式。例如，
   ```func
   int add(int x, int y) {
     return x + y;
   }
   ```
-  is an ordinary definition of the `add` function.
+  是函數 `add` 的普通定義方式。
 
-## Function declaration
-As said before, any function declaration or definition starts with a common pattern. The following is the pattern:
+## 函式宣告
+如前所述，任何函式的宣告或定義都以共同的模式開始。以下是此模式：
 ```func
 [<forall declarator>] <return_type> <function_name>(<comma_separated_function_args>) <specifiers>
 ```
-where `[ ... ]` corresponds to an optional entry.
+其中 `[ ... ]` 代表一個可選的項目。
 
-### Function name
-Function name can be any [identifier](/develop/func/literals_identifiers#identifiers) and also it can start with `.` or `~` symbols. The meaning of those symbols is [explained](/develop/func/statements#methods-calls) in the statements section.
 
-For example, `udict_add_builder?`, `dict_set` and `~dict_set` are valid and different function names. (They are defined in [stdlib.fc](/develop/func/stdlib).)
+### 函式名稱
 
-#### Special function names
-FunC (actually Fift assembler) has several reserved function names with predefined [ids](/develop/func/functions#method_id).
-- `main` and `recv_internal` have id = 0
-- `recv_external` has id = -1
-- `run_ticktock` has id = -2
+函式名稱可以是任何[識別字元](https://chat.openai.com/develop/func/literals_identifiers#identifiers)，並且可以以 `.` 或 `~` 符號開頭。這些符號的意義在[陳述式](https://chat.openai.com/develop/func/statements#methods-calls)中有所解釋。
 
-Every program must have a function with id 0, that is, `main` or `recv_internal` function.
-`run_ticktock` is called in ticktock transactions of special smart contracts.
+例如，`udict_add_builder?`、`dict_set`和`~dict_set`都是有效且不同的函式名稱（它們定義在[stdlib.fc](https://chat.openai.com/develop/func/stdlib)中）。
 
-#### Receive internal
+#### 特殊函式名稱
 
-`recv_internal` is called when a smart contract receives an inbound internal message.
-There are some variables at the stack when [TVM initiates](https://ton.org/docs/learn/tvm-instructions/tvm-overview#initialization-of-tvm), by setting arguments in `recv_internal` we give smart-contract code awareness about some of them. Those arguments about which code will not know, will just lie at the bottom of the stack never touched. 
+FunC（實際上是Fift組合語言）有幾個保留的函式名稱，具有預定義的[id](https://chat.openai.com/develop/func/functions#method_id)。
 
-So each of the following `recv_internal` declarations is correct, but those with less variables will spend slightly less gas (each unused argument adds additional `DROP` instructions)
+* `main`和`recv_internal`具有id = 0
+* `recv_external`具有id = -1
+* `run_ticktock`具有id = -2
+
+每個程序都必須具有帶有id 0的函式，即`main`或`recv_internal`函式。 在特殊智能合約的ticktock交易中，會調用`run_ticktock`。
+
+#### 接收內部消息
+
+當智能合約收到入站的內部消息時，會調用`recv_internal`函式。在[TVM初始化](https://ton.org/docs/learn/tvm-instructions/tvm-overview#initialization-of-tvm)時，堆疊中會有一些變數。通過在`recv_internal`中設置參數，我們可以讓智能合約代碼了解其中的一些變數。對於代碼不知道的參數，它們只會位於堆疊的底部，從未被使用。
+
+因此，以下每個`recv_internal`的聲明都是正確的，但那些使用更少變數的聲明會稍微節省一些 gas（每個未使用的參數都會增加額外的`DROP`指令）。
 
 ```func
 () recv_internal(int balance, int msg_value, cell in_msg_cell, slice in_msg) {}
@@ -57,14 +61,13 @@ So each of the following `recv_internal` declarations is correct, but those with
 ```
 
 
+#### 接收外部消息
 
+`recv_external`是用於接收入站的外部消息。
 
-#### Receive external
+### 回傳型別
 
-`recv_external` is for inbound external messages.
-
-### Return type
-Return type can be any atomic or composite type as described in the [types](/develop/func/types.md) section. For example,
+回傳型別可以是[型別](https://chat.openai.com/develop/func/types.md)章節中所述的任何原子或複合型別。例如，
 ```func
 int foo();
 (int, int) foo'();
@@ -72,7 +75,7 @@ int foo();
 (int -> int) foo'''();
 () foo''''();
 ```
-are valid function declarations.
+都是有效的函式宣告。
 
 Type inference is also allowed. For example,
 ```func
@@ -80,35 +83,38 @@ _ pyth(int m, int n) {
   return (m * m - n * n, 2 * m * n, m * m + n * n);
 }
 ```
-is a valid definition of function `pyth` of type `(int, int) -> (int, int, int)`, which computes Pythagorean triples.
+是一個有效的函式定義，函式名稱為 `pyth` ，型別為 `(int, int) -> (int, int, int)` ，用於計算勾股數。
 
-### Function arguments
-Function arguments are separated by commas. The valid declarations of an argument are following:
-- Ordinary declaration: type + name. For example, `int x` is a declaration of argument of type `int` and name `x` in the function declaration `() foo(int x);`
-- Unused argument declaration: only type. For example,
+### 函式參數
+
+函式參數由逗號分隔。以下是參數的有效聲明方式：
+
+* 普通聲明：類型 + 名稱。例如，在函式聲明 `() foo(int x);` 中，`int x` 是類型為 `int`、名稱為 `x` 的參數聲明。
+* 未使用的參數聲明：僅類型。例如，
   ```func
   int first(int x, int) {
     return x;
   }
   ```
-  is a valid function definition of type `(int, int) -> int`
-- Argument with an inferred type declaration: only name.
-  For example,
+  是一個有效的函式定義，型別為 `(int, int) -> int`。
+* 具有推斷型別聲明的參數：僅名稱。 例如，
   ```func
   int inc(x) {
     return x + 1;
   }
   ```
-  is a valid function definition of type `int -> int`. The `int` type of `x` is inferred by the type-checker.
+  是一個有效的函式定義，型別為 int -> int。 x 的 int 型別由類型檢查器推斷。
 
-Note that although a function may look like a function of several arguments, it's actually a function of one [tensor-type](/develop/func/types#tensor-types) argument. To see the difference, please refer to [function application](/develop/func/statements#function-application). Nevertheless, the components of the argument tensor are conventionally called function arguments.
+需要注意的是，儘管一個函式看起來像是多個參數的函式，但實際上它是一個以單一 [張量型別](https://chat.openai.com/develop/func/types#tensor-types) 參數的函式。要了解這種差異，請參閱[函式應用](https://chat.openai.com/develop/func/statements#function-application)。儘管如此，參數張量的組成部分通常被稱為函式參數。
 
-### Function calls
+### 函式呼叫
 
-#### Non-modifying methods
+#### 非修改方法
 
 :::info
-Non-modifying function supports short function call form with `.`
+
+非修改函式支援使用 `.` 進行簡潔的函式呼叫。
+
 :::
 
 ```func
@@ -116,16 +122,19 @@ example(a);
 a.example();
 ```
 
-If a function has at least one argument, it can be called as a non-modifying method. For example, `store_uint` has type `(builder, int, int) -> builder` (the second argument is the value to store, and the third is the bit length). `begin_cell` is a function that creates a new builder. The following codes are equivalent:
+如果一個函式至少有一個參數，它可以被當作一個非修改方法進行調用。例如，`store_uint` 的型別為 `(builder, int, int) -> builder` （第二個參數是要存儲的值，第三個是位長度）。`begin_cell` 是一個創建新 builder 的函式。以下代碼等效：
+
 ```func
 builder b = begin_cell();
 b = store_uint(b, 239, 8);
 ```
+
 ```func
 builder b = begin_cell();
 b = b.store_uint(239, 8);
 ```
-So the first argument of a function can be passed to it being located before the function name, if separated by `.`. The code can be further simplified:
+因此，函式的第一個參數可以在函式名稱之前通過 . 分隔傳遞給它。該代碼可以進一步簡化：
+
 ```func
 builder b = begin_cell().store_uint(239, 8);
 ```
@@ -137,21 +146,21 @@ builder b = begin_cell().store_uint(239, 8)
 ```
 
 
-#### Modifying functions
-:::info
-Modifying function supports short form with `~` and `.` operators.
-:::
+#### 修改函式
 
-If the first argument of a function has type `A` and the return value of the function has the shape of `(A, B)` where `B` is some arbitrary type, then the function can be called as a modifying method.
+:::info 修改函式支援使用 `~` 和 `.` 運算子進行簡化呼叫。 :::
 
-Modifying function calls may take some arguments and return some values, but they modify their first argument, that is, assign the first component of the returned value to the variable from the first argument. 
+如果一個函式的第一個參數型別為 `A`，而函式的返回值形狀為 `(A, B)`，其中 `B` 是任意型別，那麼此函式可以被當作一個修改方法來調用。
+
+修改函式的呼叫可能會有一些參數和返回值，但它們會修改它們的第一個參數，即將返回值的第一個元素賦值給第一個參數的變數。
+
 ```func
 a~example();
 a = example(a);
 ```
 
 
-For example, suppose `cs` is a cell slice and `load_uint` has type `(slice, int) -> (slice, int)`: it takes a cell slice and number of bits to load and returns the remainder of the slice and the loaded value. The following codes are equivalent:
+例如，假設 `cs` 是一個 cell slice，而 `load_uint` 的型別為 `(slice, int) -> (slice, int)` ：它接受一個 cell slice 和要加載的位數，並返回切片的剩餘部分和已加載的值。以下代碼等效：
 ```func
 (cs, int x) = load_uint(cs, 8);
 ```
@@ -161,23 +170,26 @@ For example, suppose `cs` is a cell slice and `load_uint` has type `(slice, int)
 ```func
 int x = cs~load_uint(8);
 ```
-In some cases we want to use a function as a modifying method that doesn't return any value and only modifies the first argument. It can be done using unit types as follows: Suppose we want to define function `inc` of type `int -> int`, which increments an integer, and use it as a modifying method. Then we should define `inc` as a function of type `int -> (int, ())`:
+在某些情況下，我們想使用一個不返回任何值，只修改第一個參數的函式作為修改方法。可以使用單位型別來實現，如下所示：假設我們想定義型別為 int -> int 的函式 inc，它將整數加1，並將其作為修改方法使用。那麼我們應該將 inc 定義為型別為 int -> (int, ()) 的函式：
+
 ```func
 (int, ()) inc(int x) {
   return (x + 1, ());
 }
 ```
-When defined like that, it can be used as a modifying method. The following will increment `x`.
+這樣定義後，可以將它用作修改方法。以下代碼將會將 `x` 加1。
+
 ```func
 x~inc();
 ```
 
-#### `.` and `~` in function names
-Suppose we want to use `inc` as a non-modifying method too. We can write something like that:
+#### 函式名稱中的 `.` 和 `~`
+
+假設我們希望將 `inc` 用作一個非修改方法。我們可以寫出類似這樣的程式碼：
 ```func
 (int y, _) = inc(x);
 ```
-But it is possible to override the definition of `inc` as a modifying method.
+但是，我們可以覆寫 `inc` 作為修改方法的定義。
 ```func
 int inc(int x) {
   return x + 1;
@@ -186,35 +198,38 @@ int inc(int x) {
   return (x + 1, ());
 }
 ```
-And then call it like that:
+然後可以像這樣呼叫它：
 ```func
 x~inc();
 int y = inc(x);
 int z = x.inc();
 ```
-The first call will modify x; the second and third won't.
+第一個呼叫將修改 x，而第二個和第三個則不會。
 
-In summary, when a function with the name `foo` is called as a non-modifying or modifying method (i.e. with `.foo` or `~foo` syntax), the FunC compiler uses the definition of `.foo` or `~foo` correspondingly if such a definition is presented, and if not, it uses the definition of `foo`.
+總之，當以非修改或修改方法的方式調用名為 `foo` 的函式（即使用 `.foo` 或 `~foo` 語法）時，FunC 編譯器會相應地使用 `.foo` 或 `~foo` 的定義，如果有這樣的定義存在，否則它會使用 `foo` 的定義。
 
 
+### 修飾符
 
-### Specifiers
-There are three types of specifiers: `impure`, `inline`/`inline_ref`, and `method_id`. One, several, or none of them can be put in a function declaration but currently they must be presented in the right order. For example, it is not allowed to put `impure` after `inline`.
-#### Impure specifier
-`impure` specifier means that the function can have some side effects which can't be ignored. For example, we should put `impure` specifier if the function can modify contract storage, send messages, or throw an exception when some data is invalid and the function is intended to validate this data.
+有三種類型的修飾符：`impure`、`inline`/`inline_ref` 和 `method_id`。一個函式宣告中可以有一個、多個或沒有這些修飾符，但目前它們必須按正確的順序呈現。例如，不允許在 `inline` 之後放置 `impure`。
 
-If `impure` is not specified and the result of the function call is not used, then the FunC compiler may and will delete this function call.
+#### Impure 修飾符
 
-For example, in the [stdlib.fc](/develop/func/stdlib) function
+`impure` 修飾符表示該函式可能具有一些不可忽略的副作用。例如，如果函式可以修改合約存儲、發送消息或在某些數據無效時引發異常，並且該函式旨在驗證這些數據，則應該放置 `impure` 修飾符。
+
+如果沒有指定 `impure`，並且函式調用的結果未被使用，那麼 FunC 編譯器可能會刪除此函式調用。
+
+例如，在 [stdlib.fc](https://chat.openai.com/develop/func/stdlib) 函式中：
 ```func
 int random() impure asm "RANDU256";
 ```
-is defined. `impure` is used because `RANDU256` changes the internal state of the random number generator.
+定義了 `impure`，因為 `RANDU256` 改變了隨機數生成器的內部狀態。
 
-#### Inline specifier
-If a function has `inline` specifier, its code is actually substituted in every place where the function is called. It goes without saying that recursive calls to inlined functions are not possible.
+#### Inline 修飾符
 
-For example, you can using `inline` like this way in this example: [ICO-Minter.fc](https://github.com/ton-blockchain/token-contract/blob/f2253cb0f0e1ae0974d7dc0cef3a62cb6e19f806/ft/jetton-minter-ICO.fc#L16)
+如果函式有 `inline` 修飾符，則它的代碼實際上會在調用函式的每個地方替換。不用說，內聯函式的遞歸調用是不可能的。
+
+例如，在此範例中可以這樣使用 `inline`：[ICO-Minter.fc](https://github.com/ton-blockchain/token-contract/blob/f2253cb0f0e1ae0974d7dc0cef3a62cb6e19f806/ft/jetton-minter-ICO.fc#L16)
 
 ```func
 () save_data(int total_supply, slice admin_address, cell content, cell jetton_wallet_code) impure inline {
@@ -229,26 +244,31 @@ For example, you can using `inline` like this way in this example: [ICO-Minter.f
 ```
 
 
-#### Inline_ref specifier
-The code of a function with the `inline_ref` specifier is put into a separate cell, and every time when the function is called, a `CALLREF` command is executed by TVM. So it's similar to `inline`, but because a cell can be reused in several places without duplicating it, it is almost always more efficient in terms of code size to use `inline_ref` specifier instead of `inline` unless the function is called exactly once. Recursive calls of `inline_ref`'ed functions are still impossible because there are no cyclic references in the TVM cells.
-#### method_id
-Every function in TVM program has an internal integer id by which it can be called. Ordinary functions are usually numbered by subsequent integers starting from 1, but get-methods of the contract are numbered by crc16 hashes of their names. `method_id(<some_number>)` specifier allows to set the id of a function to specified value, and `method_id` uses the default value `(crc16(<function_name>) & 0xffff) | 0x10000`. If a function has `method_id` specifier, then it can be called in lite-client or ton-explorer as a get-method by its name.
+#### Inline_ref 修飾符
 
-For example,
+具有 `inline_ref` 修飾符的函式的代碼被放入一個單獨的儲存格中，每當該函式被調用時，TVM 就會執行 `CALLREF` 命令。因此，它類似於 `inline`，但由於可以在多個位置重複使用儲存格，而不會重複，所以在代碼大小方面使用 `inline_ref` 修飾符通常比使用 `inline` 更有效，除非函式確實只被調用了一次。在 TVM 儲存格中，不存在循環引用，因此仍然無法進行 `inline_ref` 函式的遞迴調用。
+
+#### method_id
+
+TVM 程序中的每個函式都有一個內部整數 ID，可以通過該 ID 進行調用。通常，普通函式的 ID 是從 1 開始的連續整數，但合約的 get 方法是根據它們的名稱的 crc16 哈希編號的。`method_id(<some_number>)` 修飾符允許將函式的 ID 設置為指定的值，而 `method_id` 則使用默認值 `(crc16(<function_name>) & 0xffff) | 0x10000`。如果一個函式具有 `method_id` 修飾符，那麼可以通過其名稱在 lite-client 或 ton-explorer 中將其作為 get 方法調用。
+
+例如：
+
 ```func
 (int, int) get_n_k() method_id {
   (_, int n, int k, _, _, _, _) = unpack_state();
   return (n, k);
 }
 ```
-is a get-method of multisig contract.
+是多重簽名合約的一個 get 方法。
 
-### Polymorphism with forall
-Before any function declaration or definition, there can be `forall` type variables declarator. It has the following syntax:
+### 使用 forall 實現多型
+
+在任何函式宣告或定義之前，都可以有 `forall` 類型變數聲明。它具有以下語法：
 ```func
 forall <comma_separated_type_variables_names> ->
 ```
-where type variable name can be any [identifier](/develop/func/literals_identifiers#identifiers). Usually, they are named with capital letters.
+其中，型別變數名稱可以是任何 [識別符](/develop/func/literals_identifiers#identifiers)。通常，它們以大寫字母命名。
 
 For example,
 ```func
@@ -257,63 +277,65 @@ forall X, Y -> [Y, X] pair_swap([X, Y] pair) {
   return [p2, p1];
 }
 ```
-is a function that takes a tuple of length exactly 2, but with values of any (single stack entry) types in components, and swaps them with each other.
+此函數接收一個元素長度為 2 的元組，且其組成部分可以是任何 (單一堆棧) 類型的值，將其互換後返回。
 
-`pair_swap([2, 3])` will produce `[3, 2]` and `pair_swap([1, [2, 3, 4]])` will produce `[[2, 3, 4], 1]`.
+`pair_swap([2, 3])` 將會產生 `[3, 2]`，而 `pair_swap([1, [2, 3, 4]])` 將會產生 `[[2, 3, 4], 1]`。
 
-In this example `X` and `Y` are [type variables](/develop/func/types#polymorphism-with-type-variables). When the function is called, type variables are substituted with actual types, and the code of the function is executed. Note that although the function is polymorphic, the actual assembler code for it is the same for every type substitution. It is achieved essentially by the polymorphism of stack manipulation primitives. Currently, other forms of polymorphism (like ad-hoc polymorphism with type classes) are not supported.
-
-Also, it is worth noticing that the type width of `X` and `Y` is supposed to be equal to 1; that is, the values of `X` or `Y` must occupy a single stack entry. So you actually can't call the function `pair_swap` on a tuple of type `[(int, int), int]`, because type `(int, int)` has width 2, i.e., it occupies 2 stack entries.
+在這個例子中，`X` 和 `Y` 是 [型別變數](/develop/func/types#polymorphism-with-type-variables)。當函數被呼叫時，型別變數會被實際的型別取代，並執行函數的程式碼。需要注意的是，儘管此函數是多型的，但它的組合語言程式碼對於每個型別取代來說都是相同的。這主要是通過堆疊操作基元的多型實現的。目前，不支援其他形式的多型（例如具有型別類別的特定多型）。
 
 
+此外，值得注意的是，`X` 和 `Y` 的型別寬度應該等於 1；也就是說，`X` 或 `Y` 的值必須佔用單個堆疊項目。因此，實際上無法將型別為 `[(int, int), int]` 的元組傳遞給函數 `pair_swap`，因為型別 `(int, int)` 的寬度為 2，即它佔用 2 個堆疊項目。
 
-## Assembler function body definition
-As mentioned above, a function can be defined by the assembler code. The syntax is an `asm` keyword followed by one or several assembler commands, represented as strings.
-For example, one can define:
+
+
+## 組合語言函數體定義
+如上所述，可以使用組合語言程式碼來定義函數。語法是 `asm` 關鍵字後跟一個或多個組合語言指令，以字符串表示。
+例如，可以定義：
 ```func
 int inc_then_negate(int x) asm "INC" "NEGATE";
 ```
-– a function that increments an integer and then negates it. Calls to this function will be translated to 2 assembler commands `INC` and `NEGATE`. Alternative way to define the function is:
+– 一個將整數加一並取相反數的函數。對該函數的調用將被轉換為 2 條組合語言指令 `INC` 和 `NEGATE`。另一種定義該函數的方式是：
 ```func
 int inc_then_negate'(int x) asm "INC NEGATE";
 ```
 `INC NEGATE` will be considered by FunC as one assembler command, but it is OK, because Fift assembler knows that it is 2 separate commands.
 
 :::info
-The list of assembler commands can be found here: [TVM instructions](/learn/tvm-instructions/instructions).
+組合語言指令的列表可以在此處找到：[TVM 指令](/learn/tvm-instructions/instructions)。
 :::
 
-### Rearranging stack entries
-In some cases, we want to pass arguments to the assembler function in a different order than the assembler command requires, or/and take the result in a different stack entry order than the command returns. We could manually rearrange the stack by adding corresponding stack primitives, but FunC can do it automatically.
+### 重新排列堆疊項目
+在某些情況下，我們希望以不同於組合語言指令要求的順序傳遞參數給組合語言函數，或者/和以不同的堆疊項目順序取得結果。我們可以通過添加相應的堆疊基元來手動重新排列堆疊，但是 FunC 可以自動執行這個過程。
 
 :::info
-Note, that in case of manual rearranging, arguments will be computed in the rearranged order. To overwrite this behavior use `#pragma compute-asm-ltr`: [compute-asm-ltr](compiler_directives#pragma-compute-asm-ltr)
+需要注意的是，在手動重新排列的情況下，參數將按照重新排列的順序進行計算。若要覆蓋此行為，使用 `#pragma compute-asm-ltr`：[compute-asm-ltr](compiler_directives#pragma-compute-asm-ltr)
 :::
 
-For example, suppose that the assembler command STUXQ takes an integer, builder, and integer; then it returns the builder, along with the integer flag, indicating the success or failure of the operation.
-We may define the function:
+例如，假設組合語言指令 STUXQ 接受一個整數、構建器和整數；然後它將返回構建器以及表示操作成功或失敗的整數標誌。
+我們可以定義函數：
 ```func
 (builder, int) store_uint_quite(int x, builder b, int len) asm "STUXQ";
 ```
-However, suppose we want to rearrange arguments. Then we can define:
+但是，假設我們想要重新排列參數。那麼，我們可以這樣定義：
 ```func
 (builder, int) store_uint_quite(builder b, int x, int len) asm(x b len) "STUXQ";
 ```
-So you can indicate the required order of arguments after the `asm` keyword.
+因此，您可以在 `asm` 關鍵字後面指定所需的參數順序。
 
-Also, we can rearrange return values like this:
+此外，我們可以這樣重新排列返回值：
 ```func
 (int, builder) store_uint_quite(int x, builder b, int len) asm( -> 1 0) "STUXQ";
 ```
-The numbers correspond to the indexes of returned values (0 is the deepest stack entry among returned values).
+這些數字對應於返回值的索引（0 是返回值中最深的堆疊項目）。
 
-Combining this techniques is also possible.
+結合這些技術也是可能的。
 ```func
 (int, builder) store_uint_quite(builder b, int x, int len) asm(x b len -> 1 0) "STUXQ";
 ```
 
-### Multiline asms
-Multiline assembler command or even Fift-code snippets can be defined via multiline strings which starts and ends with `"""`.
+### 多行組合語言指令
+
+可以使用以 `"""` 開始和結束的多行字串來定義多行組合語言指令，甚至可以定義 Fift 代碼片段。
 
 ```func
 slice hello_world() asm """

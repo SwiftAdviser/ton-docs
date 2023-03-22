@@ -1,26 +1,25 @@
-# Overview
+# 概述
 
 :::caution
-This section describes instructions and manuals for interacting with TON at a low level.
+本節描述與 TON 進行低級別交互的指令和手冊。
 :::
 
+* [逐步指南](/develop/howto/step-by-step)
 
-* [Step-by-Step](/develop/howto/step-by-step)
+  使用 Lite Client 幫助創建新智能合約的逐步指南。
 
-  Step-by-step instructions for creating a new smart contract with the help of the Lite Client.
+* [完整節點](/develop/howto/full-node)
 
-* [Full Node](/develop/howto/full-node)
+  在 TON 區塊鏈中設置完整節點的逐步指南。
 
-  Step-by-step instructions for setting up a Full Node in the TON Blockchain.
+* [驗證器](/develop/howto/validator)
 
-* [Validator](/develop/howto/validator)
+  將完整節點升級為驗證器的逐步指南。
 
-  Step-by-step instructions for upgrading a Full Node to a Validator.
+* [配置參數](/develop/howto/config-params)
 
-* [Config Params](/develop/howto/config-params)
+  創建配置參數建議並對其進行投票贊成或反對的逐步指南。
 
-  Step-by-step instructions to create configuration parameter proposals and vote for or against them.
+* [低級費用概述](/develop/howto/fees-low-level)
 
-* [Low Level Fees Overview](/develop/howto/fees-low-level)
-
-  In-depth low level fees overview in TON with links to the config parameters.
+  TON 中低級費用的深入概述，附有配置參數的鏈接。

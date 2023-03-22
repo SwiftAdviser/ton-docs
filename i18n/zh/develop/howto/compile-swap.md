@@ -1,22 +1,23 @@
-# Compile TON on a low-memory machines
+# 在記憶體較低的機器上編譯 TON
 
 :::caution
-This section describes instructions and manuals for interacting with TON at a low level.
+本節提供與 TON 進行低層級互動的指令和手冊。
 :::
 
-Creating a swap partitions to compile TON on a computer with low memory (less than 1GB).
+在記憶體較低（少於1GB）的電腦上編譯 TON，可以創建交換分區。
 
-## Prerequisites
+## 先決條件
 
-During C++ compilation in the Linux system the following errors occur, resulting in a compilation abort:
+在 Linux 系統中進行 C++ 編譯時，會發生以下錯誤，導致編譯中止：
+
 
 ```
 C++: fatal error: Killed signal terminated program cc1plus compilation terminated.
 ```
 
-## Solution
+## 解決方案
 
-This occurs due to a lack of memory and is solved by creating a swap partitions.
+這個問題是由於記憶體不足引起的，可以透過建立交換分區來解決。
 
 ```bash
 # Create the partition path
@@ -34,14 +35,14 @@ sudo swapon /var/cache/swap/swap0
 sudo swapon -s
 ```
 
-Command to delete swap partition:
+刪除交換分區的指令如下：
 
 ```bash
 sudo swapoff /var/cache/swap/swap0
 sudo rm /var/cache/swap/swap0
 ```
 
-Free space command:
+查看可用空間的指令如下：
 
 ```bash
 sudo swapoff -a

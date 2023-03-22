@@ -1,26 +1,27 @@
-# Step-by-Step Deep Dive
+# 逐步深入指南
 
 :::caution
-This section describes instructions and manuals for interacting with TON at a low level.
+本節描述與 TON 進行低級別交互的指令和手冊。
 :::
 
-The aim of this document is to provide step-by-step instructions for compiling and creating a simple smart contract (a simple wallet) in the TON Blockchain Test Network using the TON Blockchain Lite Client and associated software.
+本文的目的是為在 TON 區塊鏈測試網絡中使用 TON 區塊鏈 Lite 客戶端及相關軟件編譯和創建一個簡單的智能合約（一個簡單的錢包）提供逐步指南。
 
-We assume here that the Lite Client is already properly downloaded, compiled, and installed.
+我們假設在這裡 Lite 客戶端已經正確下載、編譯和安裝。
 
-> Note that this tutorial is for a testnet, so you must use this config:  https://ton.org/testnet-global.config.json
+> 注意，本教程適用於測試網，因此您必須使用此配置：https://ton.org/testnet-global.config.json
 
-## 1. Smart contract addresses
+## 1. 智能合約地址
 
-:::tip new version available
-Please, read new version of [Smart contract addresses](/learn/overviews/addresses) article.
+:::tip 新版本可用
+請閱讀 [智能合約地址](/learn/overviews/addresses) 文章的新版本。
 :::
 
-Smart contract addresses in the TON Network consist of two parts: 
+TON 網絡中的智能合約地址由兩部分組成：
 
-(a) the workchain ID (a signed 32-bit integer) and 
+(a) 工作鏈 ID（帶符號的 32 位整數）和
 
-(b) the address inside the workchain (64-512 bits depending on the workchain). 
+(b) 工作鏈內的地址（根據工作鏈的不同為 64-512 位）。
+
 
 Currently, only the masterchain (workchain_id=-1) and occasionally the basic workchain (workchain_id=0) are running in the TON Blockchain Network. Both of them have 256-bit addresses, so we henceforth assume that workchain_id is either 0 or -1 and that the address inside the workchain is exactly 256-bit.
 

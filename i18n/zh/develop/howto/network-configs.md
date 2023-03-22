@@ -1,6 +1,6 @@
-# Network Configs
+# 網路設定
 
-On this page you can find active network configs of TON Blockchain:
+在此頁面中，您可以找到 TON 區塊鏈的活躍網路配置：
 
-* **Mainnet**: https://ton.org/global-config.json
-* **Testnet**: https://ton.org/testnet-global.config.json
+* **主網路 (Mainnet)**：https://ton.org/global-config.json
+* **測試網路 (Testnet)**：https://ton.org/testnet-global.config.json

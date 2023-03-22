@@ -1,13 +1,14 @@
-# Statements
-This section briefly discusses FunC statements, constituting the code of ordinary function bodies.
+# 陳述句
+本節簡要討論FunC陳述句，它們構成普通函數主體的代碼。
 
-## Expression statements
-The most common type of a statement is the expression statement. It's an expression followed by `;`. Expression's description would be quite complicated, so only a sketch is presented here. As a rule all sub-expressions are computed left to right with one exception of [asm stack rearrangement](functions#rearranging-stack-entries) which may define order manually.
+## 表達式陳述句
+最常見的一種陳述句是表達式陳述句。它是一個表達式後跟著 `;`。表達式的描述可能會很複雜，因此這裡只呈現一個簡略的概述。通常情況下，所有的子表達式都從左到右計算，但有一個例外是 [asm stack rearrangement](functions#rearranging-stack-entries)，它可以手動定義計算順序。
 
-### Variable declaration
-It is not possible to declare a local variable without defining its initial value.
+### 變量聲明
+沒有定義其初始值，就無法聲明一個本地變量。
 
-Here are some examples of variables declarations:
+以下是一些變量聲明的示例：
+
 ```func
 int x = 2;
 var x = 2;
@@ -22,15 +23,16 @@ var (x, y, z) = (1, 2, 3);
 var [x, y, z] = [1, 2, 3];
 ```
 
-Variable can be "redeclared" in the same scope. For example, this is a correct code:
+在同一範圍內變量可以 "重新聲明"。例如，這是正確的代碼:
 ```func
 int x = 2;
 int y = x + 1;
 int x = 3;
 ```
-In fact, the second occurrence of `int x` is not a declaration, but just a compile-time insurance that `x` has type `int`. So the third line is essentially equivalent to a simple assignment `x = 3;`.
+事實上，第二次出現的 `int x` 不是一個聲明，而只是在編譯時保證 `x` 具有類型 `int`。因此，第三行基本上相當於一個簡單的賦值 `x = 3;`。
 
-In nested scopes, a variable can be truly redeclared just like in the C language. For example, consider the code:
+在嵌套作用域中，一個變量可以像在 C 語言中一樣被真正地重新聲明。例如，考慮以下代碼：
+
 ```func
 int x = 0;
 int i = 0;

@@ -1,17 +1,17 @@
 # FunC Cookbook
 
-The core reason for creating the FunC Cookbook is to collect all the experience from FunC developers in one place so that future developers will use it!
+FunC Cookbook 的核心原因是將所有 FunC 開發人員的經驗集中在一個地方，以便未來的開發人員可以使用它！
 
-Compared to the FunC Documentation, this article is more focused on everyday tasks every FunC developer resolve during the development of smart contracts.
+相比 FunC 文檔，本文更注重解決智能合約開發過程中每個 FunC 開發人員的日常任務。
 
-:::caution draft   
-This is a concept article. We're still looking for someone experienced to write it. Read more about contributing on [FunC Cookbook ton-footstep](https://github.com/ton-society/ton-footsteps/issues/10).
+:::caution 草稿   
+這是一篇概念性文章。我們仍在尋找有經驗的作者來撰寫它。閱讀有關在 [FunC Cookbook ton-footstep](https://github.com/ton-society/ton-footsteps/issues/10) 上做出貢獻的更多信息。
 :::
 
-## Basics
-### How to write an if statement
+## 基礎知識
+### 如何編寫 if 語句
 
-Let's say we want to check if any event is relevant. To do this, we use the flag variable. Remember that in FunC `true` is `-1` and `false` is `0`.
+假設我們想檢查是否有任何事件是相關的。為此，我們使用標誌變量。請記住，在 FunC 中，`true` 是 `-1`，而 `false` 是 `0`。
 
 ```func
 int flag = 0; ;; false
@@ -26,15 +26,15 @@ else {
 
 > 💡 Noted
 > 
-> We do not need the operator `==`, because the value `0` is `false`, so any other value will be `true`.
+> 我們不需要運算符 `==`，因為值 `0` 是 `false`，所以任何其他值都是 `true`。
 
-> 💡 Useful links
+> 💡 有用的鏈接
 >  
-> ["If statement" in docs](/develop/func/statements#if-statements)
+> [文檔中的 "if 語句"](/develop/func/statements#if-statements)
 
-### How to write a repeat loop
+### 如何編寫 repeat 循環
 
-As an example, we can take exponentiation
+以指數運算為例
 
 ```func
 int number = 2;
@@ -47,13 +47,13 @@ repeat(degree - 1) {
 }
 ```
 
-> 💡 Useful links
+> 💡 有用的鏈接
 > 
-> ["Repeat loop" in docs](/develop/func/statements#repeat-loop)
+> [文檔中的 "repeat 循環"](/develop/func/statements#repeat-loop)
 
-### How to write a while loop
+### 如何編寫 while 循環
 
-While is useful when we do not know how often to perform a particular action. For example, take a `cell`, which is known to store up to four references to other cells. 
+當我們不知道要執行特定操作的頻率時，while 循環非常有用。例如，取一個 `cell`，它知道最多可以存儲對其他單元格的四個引用。
 
 ```func
 cell inner_cell = begin_cell() ;; create a new empty builder
@@ -72,25 +72,25 @@ while (msg.slice_refs_empty?() != -1) { ;; we should remind that -1 is true
 }
 ```
 
-> 💡 Useful links
+> 💡 有用的鏈接
 > 
-> ["While loop" in docs](/develop/func/statements#while-loop)
+> [文檔中的 "while 循環"](/develop/func/statements#while-loop)
 >
-> ["Cell" in docs](/learn/overviews/cells)
+> [文檔中的 "cell"](/learn/overviews/cells)
 >
-> ["slice_refs_empty?()" in docs](/develop/func/stdlib#slice_refs_empty)
+> ["slice_refs_empty?()" 的文檔](/develop/func/stdlib#slice_refs_empty)
 >
-> ["store_ref()" in docs](/develop/func/stdlib#store_ref)
+> ["store_ref()" 的文檔](/develop/func/stdlib#store_ref)
 > 
-> ["begin_cell()" in docs](/develop/func/stdlib#begin_cell)
+> ["begin_cell()" 的文檔](/develop/func/stdlib#begin_cell)
 > 
-> ["end_cell()" in docs](/develop/func/stdlib#end_cell)
+> ["end_cell()" 的文檔](/develop/func/stdlib#end_cell)
 > 
-> ["begin_parse()" in docs](/develop/func/stdlib#begin_parse)
+> ["begin_parse()" 的文檔](/develop/func/stdlib#begin_parse)
 
-### How to write a do until loop
+### 如何編寫 do until 循環
 
-When we need the cycle to run at least once, we use `do until`.
+當我們需要循環至少運行一次時，我們使用 `do until`。
 
 ```func 
 int flag = 0;
@@ -100,13 +100,13 @@ do {
 } until (flag == -1); ;; -1 is true
 ```
 
-> 💡 Useful links
+> 💡 有用的鏈接
 > 
-> ["Until loop" in docs](/develop/func/statements#until-loop)
+> [文檔中的 "until 循環"](/develop/func/statements#until-loop)
 
-### How to determine if slice is empty
+### 如何確定切片是否為空
 
-Before working with `slice`, it is necessary to check whether it has any data to process it correctly. We can use `slice_empty?()` to do this, but we have to consider that it will return `-1` (`true`) if there is at least one `bit` of data or one `ref`.
+在使用 `slice` 之前，必須檢查它是否有任何數據，以便正確處理它。我們可以使用 `slice_empty?()` 來做到這一點，但我們必須考慮到如果至少有一個 `bit` 數據或一個 `ref`，它會返回 `-1` (`true`)。
 
 ```func
 ;; creating empty slice
@@ -136,24 +136,23 @@ slice slice_with_bits_and_refs = begin_cell()
 ;; `slice_empty?()` returns `false`, because slice have any `bits` and `refs`
 slice_with_bits_and_refs.slice_empty?();
 ```
-> 💡 Useful links
+> 💡 有用的鏈接
 >
-> ["slice_empty?()" in docs](/develop/func/stdlib#slice_empty)
+> ["slice_empty?()" 的文檔](/develop/func/stdlib#slice_empty)
 > 
-> ["store_slice()" in docs](/develop/func/stdlib#store_slice)
+> ["store_slice()" 的文檔](/develop/func/stdlib#store_slice)
 > 
-> ["store_ref()" in docs](/develop/func/stdlib#store_ref)
+> ["store_ref()" 的文檔](/develop/func/stdlib#store_ref)
 > 
-> ["begin_cell()" in docs](/develop/func/stdlib#begin_cell)
+> ["begin_cell()" 的文檔](/develop/func/stdlib#begin_cell)
 > 
-> ["end_cell()" in docs](/develop/func/stdlib#end_cell)
+> ["end_cell()" 的文檔](/develop/func/stdlib#end_cell)
 > 
-> ["begin_parse()" in docs](/develop/func/stdlib#begin_parse)
+> ["begin_parse()" 的文檔](/develop/func/stdlib#begin_parse)
 
+### 如何判斷 slice 是否為空（不包含任何位，但可能包含引用）
 
-### How to determine if slice is empty (dosen't have any bits, but may have refs)
-
-If we need to check only the `bits` and it does not matter if there are any `refs` in `slice`, then we should use `slice_data_empty?()`.
+如果我們只需要檢查 `bits`，並且不需要在 `slice` 中有任何 `refs`，則應使用 `slice_data_empty?()`。
 
 ```func 
 ;; creating empty slice
@@ -184,24 +183,24 @@ slice slice_with_bits_and_refs = begin_cell()
 slice_with_bits_and_refs.slice_data_empty?();
 ```
 
-> 💡 Useful links
+> 💡 有用的鏈接
 >
-> ["slice_data_empty?()" in docs](/develop/func/stdlib#slice_data_empty)
+> ["slice_data_empty?()" 的文檔](/develop/func/stdlib#slice_data_empty)
 > 
-> ["store_slice()" in docs](/develop/func/stdlib#store_slice)
+> ["store_slice()" 的文檔](/develop/func/stdlib#store_slice)
 > 
-> ["store_ref()" in docs](/develop/func/stdlib#store_ref)
+> ["store_ref()" 的文檔](/develop/func/stdlib#store_ref)
 > 
-> ["begin_cell()" in docs](/develop/func/stdlib#begin_cell)
+> ["begin_cell()" 的文檔](/develop/func/stdlib#begin_cell)
 > 
-> ["end_cell()" in docs](/develop/func/stdlib#end_cell)
+> ["end_cell()" 的文檔](/develop/func/stdlib#end_cell)
 > 
-> ["begin_parse()" in docs](/develop/func/stdlib#begin_parse)
+> ["begin_parse()" 的文檔](/develop/func/stdlib#begin_parse)
 
+### 如何確定片段是否為空（沒有任何引用，但可能具有位）
 
-### How to determine if slice is empty (dosen't have any refs, but may have bits)
+如果我們只對 `refs` 感興趣，則應使用 `slice_refs_empty?()` 檢查它們的存在。
 
-In case we are only interested in `refs`, we should check their presence using `slice_refs_empty?()`.
 
 ```func 
 ;; creating empty slice
@@ -232,23 +231,24 @@ slice slice_with_bits_and_refs = begin_cell()
 slice_with_bits_and_refs.slice_refs_empty?();
 ```
 
-> 💡 Useful links
+> 💡 有用的鏈接
 > 
-> ["slice_refs_empty?()" in docs](/develop/func/stdlib#slice_refs_empty)
+> ["slice_refs_empty?()" 在文檔中](/develop/func/stdlib#slice_refs_empty)
 > 
-> ["store_slice()" in docs](/develop/func/stdlib#store_slice)
+> ["store_slice()" 在文檔中](/develop/func/stdlib#store_slice)
 > 
-> ["store_ref()" in docs](/develop/func/stdlib#store_ref)
+> ["store_ref()" 在文檔中](/develop/func/stdlib#store_ref)
 > 
-> ["begin_cell()" in docs](/develop/func/stdlib#begin_cell)
+> ["begin_cell()" 在文檔中](/develop/func/stdlib#begin_cell)
 > 
-> ["end_cell()" in docs](/develop/func/stdlib#end_cell)
+> ["end_cell()" 在文檔中](/develop/func/stdlib#end_cell)
 > 
-> ["begin_parse()" in docs](/develop/func/stdlib#begin_parse)
+> ["begin_parse()" 在文檔中](/develop/func/stdlib#begin_parse)
 
-### How to determine if cell is empty
+### 如何確定單元格是否為空
 
-To check if there is any data in a `cell`, we should first convert it to `slice`. If we are only interested in having `bits`, we should use `slice_data_empty?()`, if only `refs` - `slice_data_refs?()`. In case we want to check the presence of any data regardless of whether it is a `bit` or `ref`, we need to use `slice_empty?()`.
+要檢查 `cell` 是否存在任何數據，我們應首先將其轉換為 `slice`。如果我們只對 `bits` 感興趣，則應使用 `slice_data_empty?()`；如果只對 `refs` 感興趣，則使用 `slice_data_refs?()`。如果我們希望檢查是否存在任何數據，而不管它是 `bit` 還是 `ref`，則需要使用 `slice_empty?()`。
+
 
 ```func
 cell cell_with_bits_and_refs = begin_cell()
@@ -268,21 +268,22 @@ else {
 }
 ```
 
-> 💡 Useful links
->
+> 💡 有用的鏈接
+> 
 > ["slice_empty?()" in docs](/develop/func/stdlib#slice_empty)
->
+> 
 > ["begin_cell()" in docs](/develop/func/stdlib#begin_cell)
->
+> 
 > ["store_uint()" in docs](/develop/func/stdlib#store_uint)
->
+> 
 > ["end_cell()" in docs](/develop/func/stdlib#end_cell)
->
+> 
 > ["begin_parse()" in docs](/develop/func/stdlib#begin_parse)
 
-### How to determine if dict is empty
+### 如何確定字典是否為空
 
-There is a method of `dict_empty?()` to check the date presence in dict. This method is the equivalent of `cell_null?()` because usually a `null`-cell is an empty dictionary.
+有一種方法 `dict_empty?()` 可以檢查字典中的數據是否存在。這個方法相當於 `cell_null?()`，因為通常一個 `null` cell 就是一個空字典。
+
 
 ```func
 cell d = new_dict();
@@ -297,17 +298,18 @@ else {
 }
 ```
 
-> 💡 Useful links
+> 💡 有用的鏈接
 >
-> ["dict_empty?()" in docs](/develop/func/stdlib#dict_empty)
+> [文檔中的 "dict_empty?()"](/develop/func/stdlib#dict_empty)
 >
-> ["new_dict()" in docs](/develop/func/stdlib/#new_dict) creating an empty dict
+> [文檔中的 "new_dict()"](/develop/func/stdlib/#new_dict) 創建一個空字典
 >
-> ["dict_set()" in docs](/develop/func/stdlib/#dict_set) adding some elements in dict d with function, so it is not empty
+> [文檔中的 "dict_set()"](/develop/func/stdlib/#dict_set) 使用函數在字典 d 中添加一些元素，使其不是空的
 
-### How to determine if tuple is empty
+### 如何確定元組是否為空
 
-When working with `tuples`, it is important always to know if any values are inside for extraction. If we try to extract value from an empty `tuple`, we get an error: "not a tuple of valid size" with `exit code 7`.
+在使用 `tuples` 時，始終知道是否存在任何值進行提取非常重要。如果我們嘗試從一個空的 `tuple` 中提取值，我們會收到一個錯誤：“not a tuple of valid size”，並且出現 `exit code 7`。
+
 
 ```func
 ;; Declare tlen function because it's not presented in stdlib
@@ -329,17 +331,20 @@ When working with `tuples`, it is important always to know if any values are ins
 
 > 💡 Noted
 > 
-> We are declaring tlen assembly function. You can read more [here](/develop/func/functions#assembler-function-body-definition) and see [list of all assembler commands](/learn/tvm-instructions/instructions).
+> 我們聲明了 tlen 組合語言函數。您可以在[這裡](/develop/func/functions#assembler-function-body-definition)閱讀更多信息，並查看[所有組合語言命令的列表](/learn/tvm-instructions/instructions)。
 
-> 💡 Useful links
+> 💡 有用的鏈接
 >
-> ["empty_tuple?()" in docs](/develop/func/stdlib#empty_tuple)
+> [文檔中的 "empty_tuple?()"](/develop/func/stdlib#empty_tuple)
 >
-> ["tpush()" in docs](/develop/func/stdlib/#tpush)
+> [文檔中的 "tpush()"](/develop/func/stdlib/#tpush)
 >
-> ["Exit codes" in docs](/learn/tvm-instructions/tvm-exit-codes)
+> [文檔中的 "退出代碼"](/learn/tvm-instructions/tvm-exit-codes)
 
-### How to determine if lisp-style list is empty
+### 如何確定 lisp-style 列表是否為空
+
+對於 Lisp-style 列表，可以使用 `empty_tuple?()` 函數來確定是否為空。如果是，那麼調用任何 `tpush()` 或 `tpop()` 函數都將導致 `exit code 7` 的異常。
+
 
 ```func
 tuple numbers = null();

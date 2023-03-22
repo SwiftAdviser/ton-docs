@@ -1,20 +1,20 @@
-# Overview
+# 概述
 
-A high-level language FunC is used to program smart contracts on TON.
+高級語言 FunC 用於在 TON 上編程智能合約。
 
-FunC is a domain-specific, C-like, statically typed language.
+FunC 是一種類似於 C 語言的靜態類型的領域特定語言。
 
-FunC programs are compiled into Fift assembler code, which generates corresponding bytecode for the [TON Virtual Machine](/learn/tvm-instructions/tvm-overview).
+FunC 程序編譯成 Fift 組合語言代碼，該代碼生成對應的 [TON 虛擬機](https://docs.ton.dev/86757ecb2/p/299df7-tvm-overview) 的字節碼。
 
-Further this bytecode (actually a [tree of cells](/learn/overviews/cells), like any other data in the TON Blockchain) can be used for creating smart contracts in the blockchain or can be run on a local instance of TVM.
+進一步地，這個字節碼（實際上是區塊鏈中的任何其他數據一樣的 [單元格樹](https://docs.ton.dev/86757ecb2/p/35b656-cells)）可以用於在區塊鏈上創建智能合約，也可以在本地 TVM 實例上運行。
 
-You can find more information about FunC in the [DOCUMENTATION](/develop/func/types) section.
+您可以在 [文檔](https://docs.ton.dev/86757ecb2/p/42e22a-types) 部分找到有關 FunC 的更多信息。
 
 :::info
-FunC documentation was initially written by [@akifoq](https://github.com/akifoq).
+感謝 [@akifoq](https://github.com/akifoq) 撰寫了 FunC 文檔。
 :::
 
-Here is a simple example method for sending money written in FunC:
+這裡是一個簡單的 FunC 範例方法，用於發送金錢：
 
 ```func
 () send_money(slice address, int amount) impure inline {
@@ -28,54 +28,44 @@ Here is a simple example method for sending money written in FunC:
 }
 ```
 
-## Compiler
+## 編譯器
 
-To compile FunC locally you need binaries setup on your machine. FunC compiler binaries for Windows, MacOS (Intel/M1), and Ubuntu can be downloaded from:
-* [Environment Setup Page](/develop/smart-contracts/environment/installation)
+要在本地編譯 FunC，您需要在計算機上設置二進制文件。可以從以下位置下載 Windows、MacOS（Intel/M1）和 Ubuntu 的 FunC 編譯器二進制文件：
 
-:::info
-At the same time you can always make binaries from sources like:  
-[FunC compiler source code](https://github.com/ton-blockchain/ton/tree/master/crypto/func) (read [how to compile](/develop/howto/compile#func) a FunC compiler from sources).
-:::
+* [環境設置頁面](https://docs.ton.dev/86757ecb2/p/549f11-installation)
 
-## Tutorials
+:::info 同時，您還可以總是從源代碼生成二進制文件，例如：
+[FunC 編譯器源代碼](https://github.com/ton-blockchain/ton/tree/master/crypto/func)（請閱讀[如何編譯](https://docs.ton.dev/86757ecb2/p/29a8a7-how-to-compile-a-func-compiler-from-sources)從源代碼編譯 FunC 編譯器）。 :::
 
-:::tip starter tip
-The best place to start to develop using FunC: [INTRODUCTION](/develop/smart-contracts/)
-:::
+## 教程
 
-Other materials gracefully provided by the experts from the community:
+:::tip 初學者提示 開始使用 FunC 的最佳地點：[介紹](https://docs.ton.dev/86757ecb2/p/27721f-introduction-to-smart-contracts) :::
 
-* [Learn FunC in Y Minutes](https://learnxinyminutes.com/docs/func/) by **@romanovichim**
-* [TON Hello World: Step-by-step guide for writing your first smart contract](https://ton-community.github.io/tutorials/02-contract/)
-* [TON Hello World: Step by step guide for testing your first smart contract](https://ton-community.github.io/tutorials/04-testing/)
-* [10 FunC Lessons](https://github.com/romanovichim/TonFunClessons_Eng) by **@romanovichim**, using **toncli** and **toncli** tests v1
-* [10 FunC lessons](https://github.com/romanovichim/TonFunClessons_ru) by **@romanovichim**, using **toncli** and **toncli** tests v1 in Russian
-* [FunC Quiz](https://t.me/toncontests/60) by **Vadim**—Good for selfcheck. It will take 10–15 minutes. The questions are mainly about FunС with a few general questions about TON
-* [FunC Quiz](https://t.me/toncontests/58?comment=14888) by **Vadim**—FunC Quiz in Russian
+其他由社區專家優雅提供的材料：
 
-## Contests
+* **@romanovichim**的[在 Y 分鐘內學習 FunC](https://learnxinyminutes.com/docs/func/)
+* [TON Hello World：撰寫您的第一個智能合約的逐步指南](https://ton-community.github.io/tutorials/02-contract/)
+* [TON Hello World：測試您的第一個智能合約的逐步指南](https://ton-community.github.io/tutorials/04-testing/)
+* **@romanovichim**的[10 FunC課程](https://github.com/romanovichim/TonFunClessons_Eng)，使用 **toncli** 和 **toncli** tests v1
+* **@romanovichim**的[10 FunC課程（俄文）](https://github.com/romanovichim/TonFunClessons_ru)，使用 **toncli** 和 **toncli** tests v1
+* **Vadim**的[FunC小測驗](https://t.me/toncontests/60) - 用於自我檢查。需要 10-15 分鐘。問題主要涉及 FunС，也有一些關於 TON 的一般問題。
+* **Vadim**的[FunC小測驗（俄文）](https://t.me/toncontests/58?comment=14888)
 
-Participating in [contests](https://t.me/toncontests) is a great way to learn FunC.
+## 比賽
 
-You can also study previous competitions for learning purposes:
-* TON Smart Challenge #2 (good for getting started):
-  [Contest Page](https://ton.org/ton-smart-challenge-2),
-  [Tasks](https://github.com/ton-blockchain/func-contest2),
-  [Solutions](https://github.com/ton-blockchain/func-contest2-solutions),
-  [Tests](https://github.com/ton-blockchain/func-contest2-tests).
+參加[比賽](https://t.me/toncontests)是學習 FunC 的好方法。
 
-* TON Smart Challenge #1 (good for beginners):
-  [Contest Page](https://ton.org/contest),
-  [Tasks](https://github.com/ton-blockchain/func-contest1),
-  [Solutions](https://github.com/ton-blockchain/func-contest1-solutions),
-  [Tests](https://github.com/ton-blockchain/func-contest1-tests).
+你還可以學習過去的比賽：
 
-## Smart contract examples
+* TON Smart Challenge #2 (適合初學者)： [比賽頁面](https://ton.org/ton-smart-challenge-2)、 [任務](https://github.com/ton-blockchain/func-contest2)、 [解答](https://github.com/ton-blockchain/func-contest2-solutions)、 [測試](https://github.com/ton-blockchain/func-contest2-tests)。
+* TON Smart Challenge #1 (適合初學者)： [比賽頁面](https://ton.org/contest)、 [任務](https://github.com/ton-blockchain/func-contest1)、 [解答](https://github.com/ton-blockchain/func-contest1-solutions)、 [測試](https://github.com/ton-blockchain/func-contest1-tests)。
 
-Standard basic smart contracts like wallets, electors (manages validation on TON), multi-signature wallets, etc. can be a reference when studying.
+## 智能合約範例
 
-* [Smart contract examples](/develop/smart-contracts/#smart-contracts-examples)
+像錢包、選民（管理 TON 上的驗證）、多簽錢包等標準基本智能合約，可以在學習時作為參考。
 
-## Changelog
-[History of funC updates](/develop/func/changelog).
+* [智能合約範例](https://docs.ton.dev/86757ecb2/p/6bdf29-smart-contracts-examples)
+
+## 更改日誌
+
+[FunC 更新歷史](https://docs.ton.dev/86757ecb2/p/28a4c2-func-changelog)。

@@ -1,81 +1,87 @@
-# Compiler directives
-These are keywords that start with `#` and instruct the compiler to do some actions, checks, or change parameters.
+# 編譯指令
+這些關鍵字以 `#` 開頭，指示編譯器執行某些操作、檢查或更改參數。
 
-Those directives can be used only at the outermost level (not inside any function definition).
+這些指令只能在最外層級使用（不在任何函數定義內部）。
 
 ## #include
-The `#include` directive allows to include another FunC source code file that will be parsed in place of include.
+`#include` 指令允許包含另一個 FunC 源代碼文件，該文件將被解析並包含在此處。
 
-Syntax is `#include "filename.fc";`. Files are automatically checked for re-inclusion, and attempts to include
-a file more than once will be ignored by default, with a warning if the verbosity level is no lower than 2.
+語法是 `#include "filename.fc";`。文件會自動檢查是否重複包含，如果超過一次，將被忽略，如果詳細程度不低於2，則會發出警告。
 
-If an error happens during the parsing of an included file, additionally, a stack of inclusions is printed with the locations
-of each included file in the chain.
+如果在解析被包含的文件時發生錯誤，那麼還會打印出包含的堆棧，其中每個包含文件的位置都會被打印出來。
 
+
+markdown
+Copy code
 ## #pragma
-The `#pragma` directive is used to provide additional information to the compiler beyond what the language itself conveys.
+`#pragma` 指令用於在語言本身無法傳達的情況下向編譯器提供其他信息。
 
 ### #pragma version
-Version pragma is used to enforce a specific version of FunC compiler when compiling the file.
+版本指令用於在編譯文件時強制執行特定版本的 FunC 編譯器。
 
-The version is specified in a semver format, that is, _a.b.c_, where _a_ is the major version, _b_ is the minor, and _c_ is the patch.
+版本以 semver 格式指定，即 _a.b.c_，其中 _a_ 是主版本，_b_ 是次要版本，_c_ 是修補程式。
 
-There are several comparison operators available to a developer:
-* _a.b.c_ or _=a.b.c_—requires exactly the _a.b.c_ version of the compiler
-* _>a.b.c_—requires the compiler version to be higher than _a.b.c_,
-  * _>=a.b.c_—requires the compiler version to be higher or equal to _a.b.c_
-* _<a.b.c_—requires the compiler version to be lower than _a.b.c_,
-  * _<=a.b.c_—requires the compiler version to be lower or equal to _a.b.c_
-* _^a.b.c_—requires the major compiler version to be equal to the 'a' part and the minor to be no lower than the 'b' part,
-  * _^a.b_—requires the major compiler version to be equal to _a_ part and minor be no lower than _b_ part
-  * _^a_—requires the major compiler version to be no lower than _a_ part
+開發人員可以使用幾種比較運算符：
+* _a.b.c_ 或 _=a.b.c_——需要正確的 _a.b.c_ 版本的編譯器
+* _>a.b.c_——需要編譯器版本高於 _a.b.c_，
+  * _>=a.b.c_——需要編譯器版本高於或等於 _a.b.c_
+* _<a.b.c_——需要編譯器版本低於 _a.b.c_，
+  * _<=a.b.c_——需要編譯器版本低於或等於 _a.b.c_
+* _^a.b.c_——要求主要編譯器版本等於“a”部分，次要版本不低於“b”部分，
+  * _^a.b_——要求主要編譯器版本等於 _a_ 部分，次要版本不低於 _b_ 部分
+  * _^a_——要求主要編譯器版本不低於 _a_ 部分
 
-For other comparison operators (_=_, _>_, _>=_, _<_, _<=_) short format assumes zeros in omitted parts, that is:
-* _>a.b_ is the same as _>a.b.0_ (and therefore does NOT match thd _a.b.0_ version)
-* _<=a_ is the same as _<=a.0.0_ (and therefore does NOT match the _a.0.1_ version)
-* _^a.b.0_ is **NOT** the same as _^a.b_
+其他比較運算符（_=，_>，_>=，_<，_<=）的短格式假定遺漏部分的值為零，即：
+* _>a.b_ 等同於 _>a.b.0_（因此不匹配 _a.b.0_ 版本）
+* _<=a_ 等同於 _<=a.0.0_（因此不匹配 _a.0.1_ 版本）
+* _^a.b.0_ 與 _^a.b_ **不同**
 
-For example, _^a.1.2_ matches _a.1.3_ but not _a.2.3_ or _a.1.0_, however, _^a.1_ matches them all. 
+例如，_^a.1.2_ 匹配 _a.1.3_，但不匹配 _a.2.3_ 或 _a.1.0_，但 _^a.1_ 可以匹配它們所有。
 
-This directive may be used multiple times; the compiler version must satisfy all provided conditions.
+此指令可以多次使用；編譯器版本必須滿足所有提供的條件。
 
 ### #pragma not-version
-The syntax of this pragma is the same as the version pragma but it fails if the condition is satisfied.
+此指令的語法與版本指令相同，但如果條件滿足，則失敗。
 
-It can be used for blacklisting a specific version known to have problems, for example.
+例如，可以用於黑名單特定版本已知存在問題。
+
 
 ### #pragma allow-post-modification
 _funC v0.4.1_
 
-By default it is prohibited to use variable prior to its modification in the same expression. In other words, expression `(x, y) = (ds, ds~load_uint(8))` won't compile, while `(x, y) = (ds~load_uint(8), ds)` is valid.
+默認情況下，在同一表達式中對變量進行修改前禁止使用它。換句話說，表達式`(x, y) = (ds, ds~load_uint(8))`不會被編譯，而`(x, y) = (ds~load_uint(8), ds)`則是有效的。
 
-This rule can be overwritten, by `#pragma allow-post-modification`, which allow to modify variable after usage in mass assignments and function invocation; as usual sub-expressions will be computed left to right: `(x, y) = (ds, ds~load_bits(8))` will result in `x` containing initial `ds`; `f(ds, ds~load_bits(8))` first argument of `f` will contain initial `ds`, and second - 8 bits of `ds`.
+這個規則可以被覆蓋，通過`#pragma allow-post-modification`，允許在賦值和函數調用後修改變量；如常子表達式將從左到右計算：`(x, y) = (ds, ds~load_bits(8))`將導致`x`包含初始的`ds`；`f(ds, ds~load_bits(8))`的第一個參數將包含初始的`ds`，第二個參數將包含`ds`的 8 位。
 
-`#pragma allow-post-modification` works only for code after the pragma.
+`#pragma allow-post-modification`僅適用於該指令之後的代碼。
+
 
 ### #pragma compute-asm-ltr
 _funC v0.4.1_
 
-Asm declarations can overwrite order of arguments, for instance in the following expression 
+Asm 声明可以覆盖参数的顺序，例如在以下表达式中：
+
 
 ```func
 idict_set_ref(ds~load_dict(), ds~load_uint(8), ds~load_uint(256), ds~load_ref())
 ```
 
-order of parsing will be: `load_ref()`, `load_uint(256)`, `load_dict()` and `load_uint(8)` due to following asm declaration (note `asm(value index dict key_len)`):
+由於以下 asm 声明（注意 `asm(value index dict key_len)`），解析的順序將為：`load_ref()`，`load_uint(256)`，`load_dict()` 和 `load_uint(8)`：
+
 
 ```func
 cell idict_set_ref(cell dict, int key_len, int index, cell value) asm(value index dict key_len) "DICTISETREF";
 ```
 
-This behavior can be changed to strict left-to-right order of computation via `#pragma compute-asm-ltr`
+透過 `#pragma compute-asm-ltr` 可以將此行為更改為嚴格的從左到右的計算順序。
 
-As a result in
+因此，在以下代碼中：
+
 ```func
 #pragma compute-asm-ltr
 ...
 idict_set_ref(ds~load_dict(), ds~load_uint(8), ds~load_uint(256), ds~load_ref());
 ```
-order of parsing will be `load_dict()`, `load_uint(8)`, `load_uint(256)`, `load_ref()` and all asm permutation will happen after computation.
+解析的順序將是 `load_dict()`，`load_uint(8)`，`load_uint(256)`，`load_ref()`，並且所有 asm 排列都會在計算之後發生。
 
-`#pragma compute-asm-ltr` works only for code after the pragma.
+`#pragma compute-asm-ltr` 只適用於 pragma 後的代碼。

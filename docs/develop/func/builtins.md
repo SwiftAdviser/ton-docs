@@ -1,23 +1,25 @@
-# Built-ins
-This section describes some language constructions which are less fundamental than the ones described in previous articles. They could be defined in [stdlib.fc](/develop/func/stdlib) but it would leave less room for the FunC optimizer.
+# 內建函數
+本節描述的是一些比前面文章中描述的基礎語言構造更不基礎的語言構造。它們可以在 [stdlib.fc](/develop/func/stdlib) 中定義，但這樣會讓 FunC 優化器的空間更小。
 
-## Throwing exceptions
-Exceptions can be thrown by conditional primitives `throw_if`, and `throw_unless`, and by unconditional `throw`. The first argument is the error code; the second is the condition (`throw` has only one argument). These primitives have parametrized versions `throw_arg_if`, `throw_arg_unless`, and `throw_arg`. The first argument is the exception parameter of any type; the second is the error code; the third is the condition (`throw_arg` has only two arguments).
+## 拋出異常
+異常可以由有條件的原始函數 `throw_if` 和 `throw_unless`，以及無條件的 `throw` 拋出。第一個參數是錯誤代碼；第二個是條件（`throw` 只有一個參數）。這些原始函數還有帶參數版本 `throw_arg_if`、`throw_arg_unless` 和 `throw_arg`。第一個參數是任何類型的異常參數；第二個是錯誤代碼；第三個是條件（`throw_arg` 只有兩個參數）。
 
-## Booleans
-- `true` is alias for `-1`
-- `false` is alias for `0`
+## 布林值
+- `true` 是 `-1` 的別名
+- `false` 是 `0` 的別名
 
-## Dump variable
-A variable can be dumped to the debug log by the `~dump` function.
+## 輸出變數
+可以通過 `~dump` 函數將變數輸出到調試日誌中。
 
-## Dump string
-A string can be dumped to the debug log by the `~strdump` function.
+## 輸出字串
+可以通過 `~strdump` 函數將字串輸出到調試日誌中。
 
-## Integer operations
-- `muldiv` is a multiple-then-divide operation. The intermediate result is stored in 513-bit integer, so it won't overflow if the actual result fits into a 257-bit integer.
+## 整數運算
+- `muldiv` 是一個先乘後除的運算。中間結果存儲在 513 位整數中，因此如果實際結果適合於 257 位整數，它不會溢出。
 
-## Other primitives
-- `null?` checks whether the argument is `null`. By the value `null` of a TVM type, `Null` FunC represents absence of a value of some atomic type; see [null values](/develop/func/types#null-values).
-- `touch` and `~touch` move a variable to the top of the stack
-- `at` gets the value of a tuple component on the specified position
+
+## 其他原始函數
+- `null?` 檢查引數是否為 `null`。通過 TVM 型別的值 `null`，`Null` FunC 表示某些原子型別的值的缺失；請參閱 [null 值](/develop/func/types#null-values)。
+- `touch` 和 `~touch` 將變數移動到堆疊頂部
+- `at` 獲取元組組件上指定位置的值
+

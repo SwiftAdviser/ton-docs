@@ -1,7 +1,8 @@
-# Global variables
-The FunC program is essentially a list of function declarations/definitions and global variable declarations. This section covers the second topic.
+# 全局變量
+FunC 程序本質上是函數聲明/定義和全局變量聲明的列表。本節將涵蓋第二個主題。
 
-A global variable can be declared with the `global` keyword followed by the variable type and the variable name. For example,
+可以使用 `global` 關鍵字和變量類型以及變量名聲明全局變量。例如，
+
 ```func
 global ((int, int) -> int) op;
 
@@ -14,11 +15,12 @@ int main() {
   return check_assoc(2, 3, 9);
 }
 ```
-is a simple program that writes to a global functional variable `op` the addition operator `_+_` and checks the associativity of addition on three sample integers; 2, 3, and 9.
+這是一個簡單的程序，它將加法運算符 `_+_` 寫入全局函數變量 `op`，並檢查三個樣本整數的加法結合律; 2、3 和 9。
 
-Internally, global variables are stored in the c7 control register of TVM.
+在內部，全局變量存儲在 TVM 的 c7 控制寄存器中。
 
-The type of a global variable can be omitted. If so, it will be inferred from the usage of the variable. For example, we can rewrite the program as:
+全局變量的類型可以省略。如果省略，它將從變量的使用中推斷出來。例如，我們可以將程序重寫為：
+
 ```func
 global op;
 
@@ -32,7 +34,8 @@ int main() {
 }
 ```
 
-It is possible to declare several variables after the same `global` keyword. The following codes are equivalent:
+可以在同一個 `global` 關鍵字後聲明多個變量。以下代碼等價：
+
 ```func
 global int A;
 global cell B;
@@ -42,7 +45,7 @@ global C;
 global int A, cell B, C;
 ```
 
-It is not allowed to declare a local variable with the same name as an already-declared global variable. For example, this code wouldn't compile:
+不允許聲明與已聲明的全局變量同名的本地變量。例如，此代碼不會編譯：
 ```func
 global cell C;
 
@@ -51,7 +54,7 @@ int main() {
   return C;
 }
 ```
-Note that the following code is correct:
+注意，以下代碼是正確的：
 ```func
 global int C;
 
@@ -60,4 +63,4 @@ int main() {
   return C;
 }
 ```
-but here `int C = 3;` is equivalent to `C = 3;`, i.e., that is an assignment to global variable `C`, not a declaration of local variable `C` (you can find an explanation of this effect in [statements](/develop/func/statements#variable-declaration)).
+但是在這裡 `int C = 3;` 等價於 `C = 3;`，即這是對全局變量 `C` 的賦值，而不是局部變量 `C` 的聲明（您可以在 [語句](/develop/func/statements#variable-declaration) 部分中找到有關此效果的說明）。

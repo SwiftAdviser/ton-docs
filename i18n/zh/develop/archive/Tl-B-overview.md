@@ -1,11 +1,12 @@
-# TL-B Overview [deprecated]
+# TL-B 概述 [已棄用]
 
-:::caution advanced level
-This information is **very low-level** and could be hard to understand for newcomers.  
-So feel free to read about it later.
+:::caution 高級水平
+此信息屬於 **非常低級別** ，可能對新手來說難以理解。  
+所以請隨時稍後閱讀有關它的內容。
 :::
 
-TL-B stands for "Typed Language - Binary". It is used to describe a scheme of (de)serialization of objects to [cells](/learn/overviews/cells.md). Here are detailed and complete TL-B schemes for all objects in TON: https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb.
+TL-B代表“類型化語言 - 二進制”。 它用於描述將對象（反）序列化為 [cells](/learn/overviews/cells.md) 的方案。以下是TON中所有對象的詳細且完整的TL-B方案：https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb。
+
 
 ## Scheme
 

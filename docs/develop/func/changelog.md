@@ -1,50 +1,52 @@
-# History of FunC 
+# FunC 的歷史
 
-# Initial version
-Initial version was done by Telegram and active development was ceased after May 2020. We refer to version of May 2020 as "initial".
+## 初始版本
+初始版本由 Telegram 完成，在 2020 年 5 月後停止了積極開發。我們將 2020 年 5 月版本稱為“初始版本”。
 
-# Version 0.1.0
-Released in [05.2022 update](https://github.com/ton-blockchain/ton/releases/tag/v2022.05).
+## 版本 0.1.0
+於 [05.2022 更新](https://github.com/ton-blockchain/ton/releases/tag/v2022.05) 中發佈。
 
-In this version were added:
-- [Constants](/develop/func/literals_identifiers#constants)
-- [Extended string literals](/develop/func/literals_identifiers#string-literals)
-- [Semver pragmas](/develop/func/compiler_directives#pragma-version)
-- [Includes](/develop/func/compiler_directives#pragma-version)
+在此版本中新增了：
+- [常數](/develop/func/literals_identifiers#constants)
+- [擴展字串文字](/develop/func/literals_identifiers#string-literals)
+- [Semver pragma](/develop/func/compiler_directives#pragma-version)
+- [Include](/develop/func/compiler_directives#pragma-version)
 
-Fixed:
-- Fixed rarely manifested bugs in Asm.fif.
+修正：
+- 修正了 Asm.fif 中很少發生的錯誤。
 
 
-# Version 0.2.0
-Released in [08.2022 update](https://github.com/ton-blockchain/ton/releases/tag/v2022.08).
 
-In this version were added:
-- Unbalanced if/else branches (when some branches return and some are not)
+## 版本 0.2.0
+於 [08.2022 更新](https://github.com/ton-blockchain/ton/releases/tag/v2022.08) 中發佈。
 
-Fixed:
-- [FunC incorrectly handles while(false) loops #377](https://github.com/ton-blockchain/ton/issues/377)
-- [FunC incorreclty generate code for ifelse branches #374](https://github.com/ton-blockchain/ton/issues/374)
-- [FunC incorrectly return from condition in inline functions #370](https://github.com/ton-blockchain/ton/issues/370)
-- [Asm.fif: splitting of large function bodies incorrectly interfere with inlines #375](https://github.com/ton-blockchain/ton/issues/375)
+在此版本中新增了：
+- 不平衡的 if/else 分支（當某些分支返回而某些分支不返回時）
 
-# Version 0.3.0
-Released in [10.2022 update](https://github.com/ton-blockchain/ton/releases/tag/v2022.10).
+修正：
+- [FunC 不正確處理 while(false) 迴圈 #377](https://github.com/ton-blockchain/ton/issues/377)
+- [FunC 不正確生成 ifelse 分支的程式碼 #374](https://github.com/ton-blockchain/ton/issues/374)
+- [FunC 在內聯函數中不正確返回條件 #370](https://github.com/ton-blockchain/ton/issues/370)
+- [Asm.fif：將大型函數體拆分不正確地干擾了內聯函數 #375](https://github.com/ton-blockchain/ton/issues/375)
 
-In this version were added:
-- [Multiline asms](/develop/func/functions#multiline-asms)
-- Duplication of identical definition for constants and asms became allowed
-- Bitwise operations for constants for constants became allowed
 
-# Version 0.4.0
-Released in [01.2023 update](https://github.com/ton-blockchain/ton/releases/tag/v2023.01).
+## 版本 0.3.0
+於 [10.2022 更新](https://github.com/ton-blockchain/ton/releases/tag/v2022.10) 中發佈。
 
-In this version were added:
-- [try/catch statements](/develop/func/statements#try-catch-statements)
-- [throw_arg functions](/develop/func/builtins#throwing-exceptions)
-- allowed in-place modification and mass-assignments of global variables: `a~inc()` and `(a, b) = (3, 5)`, where `a` is global
+在此版本中新增了：
+- [多行組合語言指令](/develop/func/functions#multiline-asms)
+- 允許複製相同定義的常數和組合語言指令
+- 允許對常數進行位元運算
 
-Fixed:
-- forbidden ambiguous modification of local variables after it's usage in the same expression: `var x = (ds, ds~load_uint(32), ds~load_unit(64));` are forbidden, while `var x = (ds~load_uint(32), ds~load_unit(64), ds);` are not
-- Allowed empty inline functions
-- fix rare `while` optimization bug
+## 版本 0.4.0
+於 [01.2023 更新](https://github.com/ton-blockchain/ton/releases/tag/v2023.01) 中發佈。
+
+在此版本中新增了：
+- [try/catch 陳述式](/develop/func/statements#try-catch-statements)
+- [throw_arg 函數](/develop/func/builtins#throwing-exceptions)
+- 允許原地修改和大量分配全局變數：`a~inc()` 和 `(a, b) = (3, 5)`，其中 `a` 是全局變數
+
+修正：
+- 禁止在同一表達式中使用後修改本地變數的歧義修改：`var x = (ds, ds~load_uint(32), ds~load_unit(64));` 被禁止，而 `var x = (ds~load_uint(32), ds~load_unit(64), ds);` 則未被禁止。
+- 允許空的內聯函數
+- 修正罕見的 `while` 優化錯誤。
